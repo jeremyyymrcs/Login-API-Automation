@@ -11,7 +11,7 @@ class TestLogin(LoginPage, SignUpPage, HomePage):
         self.get_secret_key()
         self.switch_to_default_window()
         self.login_using_totp_code()
-        #self.verify_home_page()
+        # self.verify_home_page()
 
     # @pytest.mark.run(order=2)
     # def test_successful_login(self):
