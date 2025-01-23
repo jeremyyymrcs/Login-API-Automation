@@ -36,4 +36,4 @@ jobs:
     - name: Test with pytest
       run: |
         cd tests
-        pytest test_login.py -s -q -x --dashboard --html=report.html --maximize --screenshot --headless --window-size=1920,1080
+        pytest test_login.py -s -q -x --dashboard --html=report.html --maximize --screenshot --headless --window-size=1920,1080 -n 4
