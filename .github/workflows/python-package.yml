@@ -26,7 +26,9 @@ jobs:
         source venv/bin/activate
     - name: Install dependencies
       run: |
-        pip install --no-cache-dir -r requirements.txt
+        pip install seleniumbase
+        pip install colorglog
+
 #    - name: Lint with flake8
 #      run: |
 #        # stop the build if there are Python syntax errors or undefined names in your codebase
