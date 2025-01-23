@@ -6,7 +6,7 @@ logger = get_custom_logger(__name__)
 
 
 class HomePage(BaseCase):
-    welcome_label = '//h1[normalize-space(text())="Welcome!"]'
+    welcome_label = "(//*[(name() = 'img' and @id='image1' and @class='center')]) | (//*[(name() = 'h1' and normalize-space(text())='Welcome!')])"
     image = "#image1"
 
     def verify_home_page(self):
