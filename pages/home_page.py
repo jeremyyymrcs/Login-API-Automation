@@ -7,6 +7,5 @@ logger = get_custom_logger(__name__)
 
 class HomePage(BaseCase):
 
-
     def verify_home_page(self):
-        self.assert_text("Welcome!", "h1")
+        self.assert_exact_text("Welcome!")
