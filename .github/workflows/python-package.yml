@@ -20,10 +20,10 @@ jobs:
       uses: actions/setup-python@v3
       with:
         python-version: ${{ matrix.python-version }}
-    - name: Create and activate virtual environment
-      run: |
-        python -m venv venv
-        source venv/bin/activate
+#    - name: Create and activate virtual environment
+#      run: |
+#        python -m venv venv
+#        source venv/bin/activate
     - name: Install dependencies
       run: |
         pip install -r requirements.txt
@@ -36,4 +36,4 @@ jobs:
     - name: Test with pytest
       run: |
         cd tests
-        pytest test_login.py -s -q -x --dashboard  --headless --window-size=1920,1080
+        pytest test_login.py -s -q -x --dashboard  --headless --rs --maximize
