@@ -6,7 +6,7 @@ logger = get_custom_logger(__name__)
 
 
 class SignUpPage(BaseCase):
-    toptp_code = "//span[@id='totp']"
+    toptp_code = '[id="totp"]'
     sign_up_redirection = "//a[contains(.,'seleniumbase.io/realworld/signup')]"
 
     def get_secret_key(self):
@@ -16,7 +16,7 @@ class SignUpPage(BaseCase):
 
         try:
             # Get the secret key from the page
-            generated_totp_code = self.get_text_content(self.toptp_code, timeout=60)
+            generated_totp_code = self.get_text_content(self.toptp_code, timeout=10)
             logger.info(f"Secret key retrieved successfully: {generated_totp_code}")
 
             # Save the secret key to a file
