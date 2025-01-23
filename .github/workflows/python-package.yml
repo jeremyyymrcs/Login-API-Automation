@@ -33,7 +33,12 @@ jobs:
 #        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics --exclude=venv/*
 #        # treat warnings as non-blocking
 #        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics --exclude=venv/*
-    - name: Test with pytest
+    - name: Test with Login Feauture
       run: |
         cd tests
         pytest test_login.py -s -q -x --headless --maximize
+
+    - name: Test with API Automation
+      run: |
+        cd \VaultOutsourcinTechnicalExam
+        pytest api_testing.py -s -v
