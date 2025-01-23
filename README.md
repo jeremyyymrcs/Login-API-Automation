@@ -140,6 +140,10 @@ process:
     - **Failed Login**: Tests scenarios where incorrect credentials or an invalid TOTP code result in a failed login
       attempt.
 
+# Video Demonstration
+
+![demo_video.gif](demo_video.gif)
+
 ## Summary
 
 This test flow covers essential functionalities for user authentication, including sign-up, login, and validation of
