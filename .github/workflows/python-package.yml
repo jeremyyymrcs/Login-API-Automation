@@ -18,7 +18,7 @@ jobs:
       fail-fast: false
       max-parallel: 6
       matrix:
-        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13"]
+        python-version: [ "3.8", "3.9", "3.10", "3.11", "3.12", "3.13" ]
 
     steps:
       - uses: actions/checkout@v4
@@ -32,27 +32,31 @@ jobs:
           pip install -r requirements.txt
       - name: Install SeleniumBase
         run: |
-          pip install .
+          pip install seleniumbase
       - name: Lint with flake8
         run: |
           pip install flake8
           # Stop the build if there are flake8 issues
           flake8 . --count --show-source --statistics --exclude=temp
-      - name: Install Chrome
+      - name: Install Chrome and Chromedriver
         run: |
-          sudo apt install google-chrome-stable
+          # Install dependencies for Chrome
+          sudo apt update
+          sudo apt install -y wget curl unzip
+          # Install Google Chrome
+          GOOGLE_CHROME_DL_URL="https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb"
+          wget -q $GOOGLE_CHROME_DL_URL
+          sudo dpkg -i google-chrome-stable_current_amd64.deb
+          sudo apt -f install -y
+          # Install Chromedriver (matching Chrome version)
+          seleniumbase install chromedriver
       - name: Check the console scripts interface
         run: |
-          seleniumbase
-          sbase
-      - name: Install chromedriver
-        run: |
-          seleniumbase install chromedriver
+          seleniumbase --version
+          sbase --version
       - name: Login Test
         run: |
-          cd tests
-          pytest test_login.py -s -q -x --dashboard --html=report.html --maximize --screenshot --rs
+          cd tests && pytest test_login.py -s -q -x --dashboard --html=report.html --maximize --screenshot --rs
       - name: API Test
         run: |
-          cd VaultOutsourcinTechnicalExam
           pytest api_testing.py -s -v
