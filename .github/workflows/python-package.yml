@@ -36,4 +36,4 @@ jobs:
     - name: Test with pytest
       run: |
         cd tests
-        pytest test_login.py -s -q -x --dashboard  --headless --rs --maximize
+        pytest test_login.py -s -q -x --headless --rs --maximize
