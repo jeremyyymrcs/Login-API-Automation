@@ -6,7 +6,7 @@ logger = get_custom_logger(__name__)
 
 
 class HomePage(BaseCase):
-    welcome_label = "#Welcome!"
+    welcome_label = "//h1[contains(text(),'Welcome!')]"
 
     def verify_home_page(self):
         self.assert_element(self.welcome_label)
