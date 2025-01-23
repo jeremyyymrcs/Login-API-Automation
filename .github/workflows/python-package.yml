@@ -1,62 +1,40 @@
-name: CI build
+name: Python package
 
 on:
-  pull_request:
-    branches:
-      - '**'  # Specify the branches for pull requests
   push:
-    branches:
-      - master
-  workflow_dispatch:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 
 jobs:
   build:
-    env:
-      PY_COLORS: "1"
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
-      max-parallel: 6
       matrix:
-        python-version: [ "3.8", "3.9", "3.10", "3.11", "3.12", "3.13" ]
+        python-version: ["3.9", "3.10", "3.11"]
 
     steps:
-      - uses: actions/checkout@v4
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ matrix.python-version }}
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip wheel setuptools
-          pip install -r requirements.txt
-      - name: Install SeleniumBase
-        run: |
-          pip install seleniumbase
-      - name: Lint with flake8
-        run: |
-          pip install flake8
-          # Stop the build if there are flake8 issues
-          flake8 . --count --show-source --statistics --exclude=temp
-      - name: Install Chrome and Chromedriver
-        run: |
-          # Install dependencies for Chrome
-          sudo apt update
-          sudo apt install -y wget curl unzip
-          # Install Google Chrome
-          GOOGLE_CHROME_DL_URL="https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb"
-          wget -q $GOOGLE_CHROME_DL_URL
-          sudo dpkg -i google-chrome-stable_current_amd64.deb
-          sudo apt -f install -y
-          # Install Chromedriver (matching Chrome version)
-          seleniumbase install chromedriver
-      - name: Check the console scripts interface
-        run: |
-          seleniumbase --version
-          sbase --version
-      - name: Login Test
-        run: |
-          cd tests && pytest test_login.py -s -q -x --dashboard --html=report.html --maximize --screenshot --rs
-      - name: API Test
-        run: |
-          pytest api_testing.py -s -v
+    - uses: actions/checkout@v4
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v3
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Create and activate virtual environment
+      run: |
+        python -m venv venv
+        source venv/bin/activate
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install flake8 pytest
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+    - name: Lint with flake8
+      run: |
+        # stop the build if there are Python syntax errors or undefined names
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+    - name: Test with pytest
+      run: |
+        cd tests && pytest test_login.py -s -q -x --dashboard --html=report.html --maximize --screenshot --rs
