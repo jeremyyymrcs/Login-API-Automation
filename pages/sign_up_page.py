@@ -11,6 +11,7 @@ class SignUpPage(BaseCase):
 
     def get_secret_key(self):
         self.click(self.sign_up_redirection)
+        self.assert_element(self.toptp_code)
 
         logger.info("Attempting to retrieve the secret key from the page.")
 
