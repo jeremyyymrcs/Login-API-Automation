@@ -11,4 +11,5 @@ class HomePage(BaseCase):
 
     def verify_home_page(self):
         self.sleep(2)
+        logger.info("Asserting the element")
         self.assert_element(self.welcome_label, timeout=20)
