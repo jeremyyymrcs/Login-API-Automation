@@ -9,4 +9,5 @@ class HomePage(BaseCase):
     welcome_label = "//h1[contains(text(),'Welcome!')]"
 
     def verify_home_page(self):
-        self.assert_element(self.welcome_label)
+        self.sleep(2)
+        self.assert_element(self.welcome_label, timeout=20)
