@@ -59,7 +59,7 @@ class LoginPage(BaseCase):
             self.click(self.sign_in_button)
 
             logger.info("Login test completed successfully.")
-            self.assert_element("//h1[contains(.,'Welcome!')]")
+            self.assert_element('h1:contains("Welcome!")')
 
         except Exception as e:
 
