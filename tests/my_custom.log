@@ -1,0 +1,35 @@
+[32m2025-01-23 05:57:13 PM - INFO - Setting up the browser and opening the website.[0m
+[32m2025-01-23 05:57:15 PM - INFO - Opening the login website.[0m
+[32m2025-01-23 05:57:17 PM - INFO - Attempting to retrieve the secret key from the page.[0m
+[32m2025-01-23 05:57:17 PM - INFO - Secret key retrieved successfully: 573117[0m
+[32m2025-01-23 05:57:17 PM - INFO - TOTP code saved to 'saved_totp_code.txt'.[0m
+[32m2025-01-23 05:57:17 PM - INFO - Starting login test...[0m
+[32m2025-01-23 05:57:17 PM - INFO - Checking if the MFA login testing page label is visible.[0m
+[32m2025-01-23 05:57:17 PM - INFO - MFA Login Testing Page label is visible.[0m
+[32m2025-01-23 05:57:17 PM - INFO - Entering username and password.[0m
+[32m2025-01-23 05:57:18 PM - INFO - Reading generated totp code the saved file.[0m
+[32m2025-01-23 05:57:18 PM - INFO - Generated secret key read: 573117[0m
+[32m2025-01-23 05:57:18 PM - INFO - Entering the multifactor authentication code.[0m
+[32m2025-01-23 05:57:18 PM - INFO - Clicking the sign-in button.[0m
+[32m2025-01-23 05:57:19 PM - INFO - Login test completed successfully.[0m
+[32m2025-01-23 05:57:19 PM - INFO - Closing the browser and cleaning up.[0m
+[32m2025-01-23 05:57:20 PM - INFO - Setting up the browser and opening the website.[0m
+[32m2025-01-23 05:57:20 PM - INFO - Opening the login website.[0m
+[32m2025-01-23 05:57:20 PM - INFO - Starting login test...[0m
+[32m2025-01-23 05:57:20 PM - INFO - Checking if the MFA login testing page label is visible.[0m
+[32m2025-01-23 05:57:20 PM - INFO - MFA Login Testing Page label is visible.[0m
+[32m2025-01-23 05:57:20 PM - INFO - Entering username and password.[0m
+[32m2025-01-23 05:57:20 PM - INFO - Entering the multifactor authentication code.[0m
+[32m2025-01-23 05:57:21 PM - INFO - Login test completed successfully.[0m
+[32m2025-01-23 05:57:21 PM - INFO - Closing the browser and cleaning up.[0m
+[32m2025-01-23 05:57:21 PM - INFO - Setting up the browser and opening the website.[0m
+[32m2025-01-23 05:57:21 PM - INFO - Opening the login website.[0m
+[32m2025-01-23 05:57:21 PM - INFO - Starting the login test with incorrect password.[0m
+[32m2025-01-23 05:57:21 PM - INFO - Checking if the MFA login page label is visible.[0m
+[32m2025-01-23 05:57:21 PM - INFO - MFA Login Testing Page label is visible.[0m
+[32m2025-01-23 05:57:21 PM - INFO - Entering username 'demo_user' and incorrect password 'wong_password'.[0m
+[32m2025-01-23 05:57:22 PM - INFO - Entering the multifactor authentication code[0m
+[32m2025-01-23 05:57:22 PM - INFO - Checking for invalid password warning.[0m
+[32m2025-01-23 05:57:22 PM - INFO - Invalid password warning found, as expected.[0m
+[32m2025-01-23 05:57:22 PM - INFO - Login test completed: Login attempt failed due to incorrect password.[0m
+[32m2025-01-23 05:57:22 PM - INFO - Closing the browser and cleaning up.[0m
