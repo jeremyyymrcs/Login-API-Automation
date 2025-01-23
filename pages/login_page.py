@@ -24,7 +24,6 @@ class LoginPage(BaseCase):
 
         # This is automatically run by SeleniumBase after each test
         logger.info("Closing the browser and cleaning up.")
-        self.driver.delete_all_cookies()
         super().tearDown()
 
     def open_website(self):
