@@ -7,8 +7,8 @@ logger = get_custom_logger(__name__)
 
 class HomePage(BaseCase):
     welcome_label = "//h1[contains(text(),'Welcome!')]"
-    image = "//img[@id='image1']"
+    image = "#image1"
 
     def verify_home_page(self):
         self.sleep(2)
-        self.highlight("img#image1")
+        self.assert_element(self.image)
