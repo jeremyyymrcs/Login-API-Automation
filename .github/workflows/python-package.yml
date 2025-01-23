@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest  # Change to Windows environment
     strategy:
       fail-fast: false
       matrix:
@@ -23,17 +23,16 @@ jobs:
     - name: Create and activate virtual environment
       run: |
         python -m venv venv
-        source venv/bin/activate
+        .\venv\Scripts\activate  # Adjust for Windows environment
     - name: Install dependencies
       run: |
         pip install -r requirements.txt
-#    - name: Lint with flake8
-#      run: |
-#        # stop the build if there are Python syntax errors or undefined names in your codebase
-#        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics --exclude=venv/*
-#        # treat warnings as non-blocking
-#        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics --exclude=venv/*
+    # Uncomment and use if necessary for linting
+    # - name: Lint with flake8
+    #   run: |
+    #     flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics --exclude=venv/*
+    #     flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics --exclude=venv/*
     - name: Test with pytest
       run: |
         cd tests
-        pytest test_login.py -s -q -x --dashboard  --headless --window-size=1920,1080
+        pytest test_login.py -s -q -x --dashboard --headless --window-size=1920,1080
