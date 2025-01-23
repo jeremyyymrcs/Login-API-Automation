@@ -11,4 +11,4 @@ class HomePage(BaseCase):
 
     def verify_home_page(self):
         self.sleep(2)
-        self.assert_element(self.image, timeout=20)
+        self.highlight("img#image1")
