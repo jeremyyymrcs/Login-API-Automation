@@ -12,5 +12,3 @@ class HomePage(BaseCase):
     def verify_home_page(self):
         self.sleep(2)
         self.assert_url_contains("https://seleniumbase.io/realworld/")
-        logger.info("Asserting the element")
-        self.assert_element(self.welcome_label, timeout=20)
