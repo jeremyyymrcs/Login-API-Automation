@@ -30,6 +30,7 @@ class LoginPage(BaseCase):
         """Open the login page by reading the URL from the configuration file"""
         logger.info("Opening the login website.")
         self.open(ReadConfig.get_mfa_login_url())
+        logger.info("Webpage already opened")
 
     def login_using_totp_code(self):
         """Login using username, password, and TOTP code"""
