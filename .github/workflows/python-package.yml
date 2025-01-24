@@ -20,25 +20,20 @@ jobs:
       uses: actions/setup-python@v3
       with:
         python-version: ${{ matrix.python-version }}
-#    - name: Create and activate virtual environment
-#      run: |
-#        python -m venv venv
-#        source venv/bin/activate
     - name: Install dependencies
       run: |
         pip install -r requirements.txt
-#    - name: Lint with flake8
-#      run: |
-#        # stop the build if there are Python syntax errors or undefined names in your codebase
-#        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics --exclude=venv/*
-#        # treat warnings as non-blocking
-#        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics --exclude=venv/*
-    - name: Test with Login Feauture
+    - name: Set up Xvfb
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y xvfb
+        nohup Xvfb :99 -screen 0 1280x1024x24 &  # Starts Xvfb in the background
+        export DISPLAY=:99  # Set the DISPLAY environment variable to use the virtual framebuffer
+    - name: Test with Login Feature
       run: |
         cd tests
         pytest test_login.py -s -q -x --headless --maximize
-
     - name: Test with API Automation
       run: |
-        cd \VaultOutsourcinTechnicalExam
+        cd ..
         pytest api_testing.py -s -v
