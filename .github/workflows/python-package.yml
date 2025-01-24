@@ -57,5 +57,9 @@ jobs:
           name: code-coverage-report
           path: tests/report.html
 
+      - name: Check if report.html exists
+        run: |
+          ls -l tests/report.html
+
 
       
