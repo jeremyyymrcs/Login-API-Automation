@@ -42,14 +42,7 @@ jobs:
         run: |
           cd /home/runner/work/Login-API-Automation/Login-API-Automation
           pytest api_testing.py -s -v
-
-      - name: Archive production artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: dist-without-markdown
-          path: |
-            tests
-            !tests/**/*.md
+          cd ..
 
       - name: Upload logs and screenshots from Github Action artifacts
         uses: actions/upload-artifact@v3 #change to v3
