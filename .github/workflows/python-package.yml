@@ -12,28 +12,22 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.11"]
-
+        python-version: [ "3.11" ]
     steps:
-    - uses: actions/checkout@v4
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v3
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Install dependencies
-      run: |
-        pip install -r requirements.txt
-    - name: Set up Xvfb
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y xvfb
-        nohup Xvfb :99 -screen 0 1280x1024x24 &  # Starts Xvfb in the background
-        export DISPLAY=:99  # Set the DISPLAY environment variable to use the virtual framebuffer
-    - name: Test with Login Feature
-      run: |
-        cd tests
-        pytest test_login.py -s -q -x --headless --maximize
-    - name: Test with API Automation
-      run: |
-        cd ..
-        pytest api_testing.py -s -v
+      - uses: actions/checkout@v4
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Test with Login Feature
+        run: |
+          cd tests
+          pytest test_login.py -s -q -x --headless --maximize
+      - name: Test with API Automation
+        run: |
+          cd Login-API-Automation
+          pytest api_testing.py -s -v
