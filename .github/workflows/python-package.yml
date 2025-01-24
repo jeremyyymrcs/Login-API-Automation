@@ -42,7 +42,7 @@ jobs:
         run: |
           cd /home/runner/work/Login-API-Automation/Login-API-Automation
           pytest api_testing.py -s -v
-          cd ..
+          cd tests
 
       - name: Upload logs and screenshots from Github Action artifacts
         uses: actions/upload-artifact@v3 #change to v3
