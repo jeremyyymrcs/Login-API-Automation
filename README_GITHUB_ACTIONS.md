@@ -74,9 +74,9 @@ You can find the GitHub Actions workflow file in the `.github/workflows/` direct
 
 ![img.png](images_and_files/img.png)
 
-![img_1.png](images_and_files/img_1.png)
-
 ![img_2.png](images_and_files/img_2.png)
+
+![img_1.png](images_and_files/img_1.png)
 
 ![img_3.png](images_and_files/img_3.png)
 
