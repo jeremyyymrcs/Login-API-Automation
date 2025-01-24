@@ -72,6 +72,11 @@ includes:
 
 You can find the GitHub Actions workflow file in the `.github/workflows/` directory.
 
+After the tests are completed, GitHub Actions artifacts are created. These artifacts include:
+- Logs: Detailed logs of the test execution.
+- Screenshots: Screenshots captured during test passed or failures.
+
+
 ![img.png](images_and_files/img.png)
 
 ![img_2.png](images_and_files/img_2.png)
