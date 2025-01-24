@@ -43,11 +43,11 @@ jobs:
           cd /home/runner/work/Login-API-Automation/Login-API-Automation
           pytest api_testing.py -s -v
 
-      - name: Archive code coverage results
+      - name: Upload logs and screenshots from Github Action artifacts
         uses: actions/upload-artifact@v3 #change to v3
         with:
           name: code-coverage-report
-          path: tests/report.html
+          path: tests/report*.html
 
 
       
