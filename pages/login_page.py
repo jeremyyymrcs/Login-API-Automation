@@ -54,7 +54,10 @@ class LoginPage(BaseCase):
             logger.info(f"Generated secret key read: {generated_totp_code}")
 
             logger.info("Entering the multifactor authentication code.")
-            self.enter_mfa_code(self.multifactor_auth_code, generated_totp_code)
+            self.type(self.multifactor_auth_code, generated_totp_code)
+
+            logger.info("Clicking the sign-in button.")
+            self.click(self.sign_in_button)
 
             logger.info("Login test completed successfully.")
 

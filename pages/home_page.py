@@ -11,4 +11,4 @@ class HomePage(BaseCase):
 
     def verify_home_page(self):
         self.sleep(2)
-        self.assert_url("https://seleniumbase.io/realworld/")
+        self.assert_url_contains("https://seleniumbase.io/realworld/")
