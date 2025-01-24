@@ -70,19 +70,17 @@ includes:
 - **Environment setup**: The GitHub Action automatically sets up the necessary Python environment, installs
   dependencies, and executes the tests.
 
-You can find the GitHub Actions workflow file in the `.github/workflows/` directory.
-
 After the tests are completed, GitHub Actions artifacts are created. These artifacts include:
 - Logs: Detailed logs of the test execution.
 - Screenshots: Screenshots captured during test passed or failures.
+![img_4.png](images_and_files/img_4.png)
+![img_5.png](images_and_files/img_5.png)
 
 
+You can find the GitHub Actions workflow file in the `.github/workflows/` directory.
 ![img.png](images_and_files/img.png)
-
 ![img_2.png](images_and_files/img_2.png)
-
 ![img_1.png](images_and_files/img_1.png)
-
 ![img_3.png](images_and_files/img_3.png)
 
 
