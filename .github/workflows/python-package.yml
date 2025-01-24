@@ -15,22 +15,33 @@ jobs:
         python-version: [ "3.11", "3.12", "3.13" ]
     steps:
       - uses: actions/checkout@v4
+
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v3
         with:
           python-version: ${{ matrix.python-version }}
+
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
+
+      # Set up Xvfb to run the tests in headless mode
+      - name: Set up Xvfb
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y xvfb
+          Xvfb :99 -screen 0 1280x1024x24 &
+
+      # Set DISPLAY environment variable for Selenium to use Xvfb
+      - name: Set DISPLAY environment variable
+        run: export DISPLAY=:99
 
       - name: Test with Login Feature
         run: |
           cd tests
           pytest test_login.py -s -q -x --headless --maximize
+
       - name: Test with API Automation
         run: |
           cd /home/runner/work/Login-API-Automation/Login-API-Automation
           pytest api_testing.py -s -v
-
-
-      
