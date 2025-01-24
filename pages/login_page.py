@@ -44,8 +44,8 @@ class LoginPage(BaseCase):
             logger.info("MFA Login Testing Page label is visible.")
 
             logger.info("Entering username and password.")
-            self.type(self.username, "demo_user")
-            self.type(self.password, "secret_pass")
+            self.type(self.username, ReadConfig.get_user_name())
+            self.type(self.password, ReadConfig.get_secret_password())
 
             # Read the TOTP code from file
             logger.info("Reading generated totp code the saved file.")
@@ -77,8 +77,8 @@ class LoginPage(BaseCase):
             logger.info("MFA Login Testing Page label is visible.")
 
             logger.info("Entering username and password.")
-            self.type(self.username, "demo_user")
-            self.type(self.password, "secret_pass")
+            self.type(self.username, ReadConfig.get_user_name())
+            self.type(self.password, ReadConfig.get_secret_password())
 
             logger.info("Entering the multifactor authentication code.")
             self.enter_mfa_code(self.multifactor_auth_code, "GAXG2MTEOR3DMMDG")
@@ -98,12 +98,12 @@ class LoginPage(BaseCase):
             logger.info("MFA Login Testing Page label is visible.")
 
             logger.info("Entering username 'demo_user' and incorrect password 'wong_password'.")
-            self.type(self.username, "demo_user")
-            self.type(self.password, "wong_password")  # Enter the incorrect password
+            self.type(self.username, ReadConfig.get_user_name())
+            self.type(self.password, ReadConfig.get_wrong_password())  # Enter the incorrect password
 
             # Enter the MFA code
             logger.info("Entering the multifactor authentication code")
-            self.type(self.multifactor_auth_code, "GAXG2MTEOR3DMMDG")
+            self.type(self.multifactor_auth_code, ReadConfig.get_secret_key())
             self.click(self.sign_in_button)
 
             # Assert that the invalid password warning appears
