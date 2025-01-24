@@ -47,7 +47,7 @@ jobs:
         uses: actions/upload-artifact@v3 #change to v3
         with:
           name: code-coverage-report
-          path: tests/report_*.html
+          path: tests/report.html
 
 
       
