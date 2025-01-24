@@ -97,5 +97,5 @@ The following technologies and tools were used to develop and run the tests:
 Once you’ve installed the dependencies, you can run the automated tests with Pytest:
 
 ```bash
-cd \VaultOutsourcinTechnicalExam
+cd ..
 pytest api_testing.py -s -v
