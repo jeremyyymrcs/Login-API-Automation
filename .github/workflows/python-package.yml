@@ -19,16 +19,15 @@ jobs:
         uses: actions/setup-python@v3
         with:
           python-version: ${{ matrix.python-version }}
+
       - name: Install Chrome
         run: |
           sudo apt install google-chrome-stable
-      - name: Check the console scripts interface
-        run: |
-          seleniumbase
-          sbase
+
       - name: Install chromedriver
         run: |
           seleniumbase install chromedriver
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip wheel setuptools
@@ -38,6 +37,7 @@ jobs:
         run: |
           cd tests
           pytest test_login.py -s -q -x --headless --maximize
+
       - name: Test with API Automation
         run: |
           cd /home/runner/work/Login-API-Automation/Login-API-Automation
