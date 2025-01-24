@@ -29,5 +29,8 @@ jobs:
           pytest test_login.py -s -q -x --headless --maximize
       - name: Test with API Automation
         run: |
-          cd Login-API-Automation
+          #!/bin/bash
+          cd ..
           pytest api_testing.py -s -v
+
+      
