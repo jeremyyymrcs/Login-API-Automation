@@ -30,7 +30,9 @@ jobs:
       - name: Test with API Automation
         run: |
           #!/bin/bash
+          pwd  # Print the current working directory
           cd ..
           pytest api_testing.py -s -v
+
 
       
