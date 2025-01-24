@@ -29,9 +29,7 @@ jobs:
           pytest test_login.py -s -q -x --headless --maximize
       - name: Test with API Automation
         run: |
-          #!/bin/bash
-          pwd  # Print the current working directory
-          cd ..
+          cd /home/runner/work/Login-API-Automation/Login-API-Automation
           pytest api_testing.py -s -v
 
 
