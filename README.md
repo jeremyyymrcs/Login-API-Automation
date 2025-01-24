@@ -22,8 +22,7 @@ Authentication (MFA)**, **HTML Reports**, and **Screenshots** for better debuggi
 
 Before you begin, ensure you have the following tools installed:
 
-1. **Python 3.x**: Ensure that Python 3.x is installed on your system. You can download it
-   from [python.org](https://www.python.org/).
+1. **Python 3.11+**: Ensure that Python version 3.11 or higher is installed on your system. You can download it from [python.org](https://www.python.org/).
 2. **Pip**: Python’s package installer, which is included with Python 3.x.
 3. **Selenium**: Web automation library.
 4. **SeleniumBase**: Extends Selenium WebDriver to make automated testing easier.
@@ -91,7 +90,7 @@ pytest test_login.py -s -q -x --dashboard --html=report.html --maximize --screen
 - **Page Object Model (POM)** classes are stored here. Each file represents a different page on the web application
   being tested.
     - `home_page.py`: Contains the Home Page class and related functions.
-    - `login_page.py`: Contains the Login Page class and related functions.
+    - `login_page.py`: Contains the Login Page class and related functions (including setUp and tearDown methods).
     - `sign_up_page.py`: Contains the Sign-Up Page class and related functions.
 
 ### `configurations/`
