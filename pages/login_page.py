@@ -16,7 +16,7 @@ class LoginPage(BaseCase):
 
     def setUp(self):
         """This is automatically run by SeleniumBase before each test"""
-        logger.info("\n\n=== Starting New Test Case ===")  # Add spacing before the test case
+        print("\n\n=== Starting New Test Case ===")  # Add spacing before the test case
         logger.info(f"Setting up the browser and opening the website.")
         super().setUp()
         self.open_website()
@@ -24,7 +24,7 @@ class LoginPage(BaseCase):
     def tearDown(self):
 
         # This is automatically run by SeleniumBase after each test
-        logger.info("\n=== Test Case Completed ===\n")
+        print("=== Test Case Completed ===\n")
         super().tearDown()
 
     def open_website(self):
