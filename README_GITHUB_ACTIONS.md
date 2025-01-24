@@ -73,6 +73,7 @@ includes:
 After the tests are completed, GitHub Actions artifacts are created. These artifacts include:
 - Logs: Detailed logs of the test execution.
 - Screenshots: Screenshots captured during test passed or failures.
+- Detailed report.html: A comprehensive HTML report summarizing the test results, including pass/fail statuses, timestamps, and additional diagnostic information.
 ![img_4.png](images_and_files/img_4.png)
 ![img_5.png](images_and_files/img_5.png)
 
