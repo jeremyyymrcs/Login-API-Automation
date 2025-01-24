@@ -155,7 +155,7 @@ You can find the GitHub Actions workflow file in the `.github/workflows/` direct
 
 # Video Demonstration
 
-![demo_video.gif](demo_video.gif)
+![demo_video.gif](images_and_files/demo_video.gif)
 
 ## Summary
 
