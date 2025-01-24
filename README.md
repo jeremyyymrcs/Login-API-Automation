@@ -44,7 +44,7 @@ git clone repository_url
    command**:
 
 ```bash
-cd path/to/VaultOutsourcingTechnicalExam
+cd path/to/ProjectDirectory
 ```
 
 3. **Create a Virtual Environment**:
