@@ -52,13 +52,13 @@ cd path/to/ProjectDirectory
 python -m venv venv
 ```
 
-4**Activate the Virtual Environment**:
+4. **Activate the Virtual Environment**:
 
 ```bash
 venv\Scripts\activate
 ```
 
-5**Install the required Python packages from the requirements.txt file using pip**:
+5. **Install the required Python packages from the requirements.txt file using pip**:
 
 ```bash
 pip install -r requirements.txt
