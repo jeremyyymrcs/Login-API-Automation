@@ -7,10 +7,10 @@ logger = get_custom_logger(__name__)
 
 class SignUpPage(BaseCase):
     toptp_code = "//*[(contains(@id, 'totp'))]"
-    sign_up_redirection = "//a[@href='https://seleniumbase.io/realworld/signup']"
+    sign_up_redirection = "//a[contains(.,'seleniumbase.io/realworld/signup')]"
 
     def get_secret_key(self):
-        self.open("https://seleniumbase.io/realworld/signup")
+        self.click(self.sign_up_redirection)
         logger.info("Redirected to the sign up page.")
         #self.scroll_to(self.toptp_code)
 
