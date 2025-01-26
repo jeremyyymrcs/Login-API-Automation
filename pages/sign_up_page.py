@@ -12,7 +12,6 @@ class SignUpPage(BaseCase):
     def get_secret_key(self):
         self.open("https://seleniumbase.io/realworld/signup")
         logger.info("Redirected to the sign up page.")
-        #self.scroll_to(self.toptp_code)
 
         logger.info("Attempting to retrieve the secret key from the page.")
 
