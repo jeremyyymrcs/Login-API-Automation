@@ -10,16 +10,16 @@ class TestLogin(LoginPage, SignUpPage, HomePage):
     def test_signup(self):
         self.get_secret_key()
 
-    @pytest.mark.run(order=1)
+    @pytest.mark.run(order=2)
     def test_login_with_totp_code(self):
         self.login_using_totp_code()
         self.verify_home_page()
 
-    @pytest.mark.run(order=2)
+    @pytest.mark.run(order=3)
     def test_successful_login(self):
         self.successful_login_using_mfa_code()
         self.verify_home_page()
 
-    @pytest.mark.run(order=3)
+    @pytest.mark.run(order=4)
     def test_failed_login1(self):
         self.failed_login_attempt_with_incorrect_password()
