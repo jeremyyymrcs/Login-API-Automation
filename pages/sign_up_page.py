@@ -10,7 +10,7 @@ class SignUpPage(BaseCase):
     sign_up_redirection = "//a[contains(.,'seleniumbase.io/realworld/signup')]"
 
     def get_secret_key(self):
-        self.click(self.sign_up_redirection)
+        self.open("https://seleniumbase.io/realworld/signup")
         logger.info("Redirected to the sign up page.")
         #self.scroll_to(self.toptp_code)
 
