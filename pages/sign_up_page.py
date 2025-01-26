@@ -12,13 +12,13 @@ class SignUpPage(BaseCase):
     def get_secret_key(self):
         self.click(self.sign_up_redirection)
         logger.info("Redirected to the sign up page.")
-        self.scroll_to(self.toptp_code)
+        #self.scroll_to(self.toptp_code)
 
         logger.info("Attempting to retrieve the secret key from the page.")
 
         try:
             # Get the secret key from the page
-            generated_totp_code = self.get_text_content(self.toptp_code, timeout=60)
+            generated_totp_code = self.get_text_content(self.toptp_code, timeout=10)
             print("the code is: ", generated_totp_code)
             logger.info(f"Secret key retrieved successfully: {generated_totp_code}")
 
