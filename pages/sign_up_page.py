@@ -19,7 +19,6 @@ class SignUpPage(BaseCase):
         try:
             # Get the secret key from the page
             generated_totp_code = self.get_text_content(self.toptp_code, timeout=10)
-            print("the code is: ", generated_totp_code)
             logger.info(f"Secret key retrieved successfully: {generated_totp_code}")
 
             # Save the secret key to a file
