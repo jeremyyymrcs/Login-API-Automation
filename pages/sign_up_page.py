@@ -6,14 +6,13 @@ logger = get_custom_logger(__name__)
 
 
 class SignUpPage(BaseCase):
-    toptp_code = '#totpcode'
+    toptp_code = '#totp'
     sign_up_redirection = "//a[contains(.,'seleniumbase.io/realworld/signup')]"
 
     def get_secret_key(self):
         self.click(self.sign_up_redirection)
         logger.info("Redirected to the sign up page.")
         self.scroll_into_view(self.toptp_code)
-        self.wait_for_element_visible(self.toptp_code)
 
         logger.info("Attempting to retrieve the secret key from the page.")
 
@@ -26,8 +25,6 @@ class SignUpPage(BaseCase):
             with open("..//data//saved_totp_code.txt", "w") as file:
                 file.write(generated_totp_code)
             logger.info("TOTP code saved to 'saved_totp_code.txt'.")
-
-            return generated_totp_code
 
         except Exception as e:
             logger.error(f"Failed to retrieve or save the secret key: {e}")
