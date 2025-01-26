@@ -10,7 +10,7 @@ class LoginPage(BaseCase):
     mfa_login_testing_page_label = "//h4[contains(.,'MFA Login Testing Page')]"
     username = "//input[@id='username']"
     password = "//input[@id='password']"
-    multifactor_auth_code = "//input[@id='totpcode']"
+    multifactor_auth_code = "//input[contains(@placeholder,'Enter the 6-digit MFA Code')]"
     sign_in_button = "//a[@id='log-in']"
     invalid_password_warning = "//h6[contains(.,'Invalid Password!')]"
 
