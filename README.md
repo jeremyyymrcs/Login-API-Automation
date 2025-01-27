@@ -22,7 +22,8 @@ Authentication (MFA)**, **HTML Reports**, and **Screenshots** for better debuggi
 
 Before you begin, ensure you have the following tools installed:
 
-1. **Python 3.11+**: Ensure that Python version 3.11 or higher is installed on your system. You can download it from [python.org](https://www.python.org/).
+1. **Python 3.11+**: Ensure that Python version 3.11 or higher is installed on your system. You can download it
+   from [python.org](https://www.python.org/).
 2. **Pip**: Python’s package installer, which is included with Python 3.x.
 3. **Selenium**: Web automation library.
 4. **SeleniumBase**: Extends Selenium WebDriver to make automated testing easier.
@@ -89,8 +90,10 @@ pytest test_login.py -s -q -x --dashboard --html=report.html --maximize --screen
 
 - **Page Object Model (POM)** classes are stored here. Each file represents a different page on the web application
   being tested.
+    - `base_page.py`: Contains the BasePage class, which is the foundational class for setting up browser.
+      configurations, opening the website, and handling common setup/tearDown for all test cases.
     - `home_page.py`: Contains the Home Page class and related functions.
-    - `login_page.py`: Contains the Login Page class and related functions (including setUp and tearDown methods).
+    - `login_page.py`: Contains the Login Page class and related functions.
     - `sign_up_page.py`: Contains the Sign-Up Page class and related functions.
 
 ### `configurations/`
@@ -138,19 +141,23 @@ process:
       in.
     - **Failed Login**: Tests scenarios where incorrect credentials or an invalid TOTP code result in a failed login
       attempt.
+
 ## GitHub Actions CI/CD
 
-This repository includes pre-configured **GitHub Actions** workflows to automatically run the tests in a continuous integration/continuous deployment (CI/CD) pipeline.
+This repository includes pre-configured **GitHub Actions** workflows to automatically run the tests in a continuous
+integration/continuous deployment (CI/CD) pipeline.
 
-The workflow will run the tests on every push to the repository and generate a report upon completion. Here’s what it includes:
+The workflow will run the tests on every push to the repository and generate a report upon completion. Here’s what it
+includes:
 
 - **Test execution on each commit**: Every push to the repository triggers the workflow to run tests.
-- **Automated HTML report generation**: After each test run, an HTML report is generated, which includes detailed test results and screenshots in case of failure.
+- **Automated HTML report generation**: After each test run, an HTML report is generated, which includes detailed test
+  results and screenshots in case of failure.
 - **Notifications and logging**: The results are logged in GitHub Actions with notifications for success or failure.
-- **Environment setup**: The GitHub Action automatically sets up the necessary Python environment, installs dependencies, and executes the tests.
+- **Environment setup**: The GitHub Action automatically sets up the necessary Python environment, installs
+  dependencies, and executes the tests.
 
 You can find the GitHub Actions workflow file in the `.github/workflows/` directory.
-
 
 # Video Demonstration
 
