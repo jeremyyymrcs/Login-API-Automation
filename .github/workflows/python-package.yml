@@ -36,7 +36,7 @@ jobs:
       - name: Test with Login Feature
         run: |
           cd tests
-          pytest test_login.py -s -q -x --dashboard --self-contained-html --html=report.html --save-screenshot --maximize
+          pytest test_login.py -s -q -x --dashboard --html=report.html --save-screenshot --maximize
 
       - name: Test with API Automation
         run: |
@@ -47,7 +47,7 @@ jobs:
       - name: Upload logs and screenshots from Github Action artifacts
         uses: actions/upload-artifact@v4 #change to v3
         with:
-          name: code-coverage-report
+          name: test-result(please extract the file before viewing)
           path: |
             tests/report.html
             tests/assets/**
