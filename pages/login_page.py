@@ -64,7 +64,7 @@ class LoginPage(BasePage):
             self.type(self.password, ReadConfig.get_secret_password())
 
             logger.info("Entering the multifactor authentication code.")
-            self.enter_mfa_code(self.multifactor_auth_code, "GAXG2MTEOR3DMMDG")
+            self.enter_mfa_code(self.multifactor_auth_code, ReadConfig.get_secret_key())
             logger.info("Login test completed successfully.")
 
         except Exception as e:
