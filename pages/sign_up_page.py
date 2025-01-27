@@ -1,11 +1,13 @@
 from seleniumbase import BaseCase
+
+from pages.base_page import BasePage
 from utilities.custom_logging import get_custom_logger
 
 # Set up logger
 logger = get_custom_logger(__name__)
 
 
-class SignUpPage(BaseCase):
+class SignUpPage(BasePage):
     toptp_code = "//*[(contains(@id, 'totp'))]"
     sign_up_redirection = "//a[contains(.,'seleniumbase.io/realworld/signup')]"
 

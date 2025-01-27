@@ -1,11 +1,13 @@
 from seleniumbase import BaseCase
+
+from pages.base_page import BasePage
 from utilities.custom_logging import get_custom_logger
 from configurations.config_reader import ReadConfig
 
 logger = get_custom_logger(__name__)
 
 
-class LoginPage(BaseCase):
+class LoginPage(BasePage):
     # Locators for the login page elements
     mfa_login_testing_page_label = "//h4[contains(.,'MFA Login Testing Page')]"
     username = "//input[@id='username']"
@@ -13,25 +15,6 @@ class LoginPage(BaseCase):
     multifactor_auth_code = "//input[contains(@placeholder,'Enter the 6-digit MFA Code')]"
     sign_in_button = "//a[@id='log-in']"
     invalid_password_warning = "//h6[contains(.,'Invalid Password!')]"
-
-    def setUp(self):
-        """This is automatically run by SeleniumBase before each test"""
-        print("\n\n=== Starting New Test Case ===")
-        logger.info(f"Setting up the browser and opening the website.")
-        super().setUp()
-        self.open_website()
-
-    def tearDown(self):
-
-        # This is automatically run by SeleniumBase after each test
-        print("=== Test Case Completed ===\n")
-        super().tearDown()
-
-    def open_website(self):
-        """Open the login page by reading the URL from the configuration file"""
-        logger.info("Opening the login website.")
-        self.open(ReadConfig.get_mfa_login_url())
-        logger.info("Webpage already opened")
 
     def login_using_totp_code(self):
         """Login using username, password, and TOTP code"""
