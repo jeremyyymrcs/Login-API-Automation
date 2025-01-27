@@ -12,7 +12,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: [ "3.11"]
+        python-version: [ "3.11" ]
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python ${{ matrix.python-version }}
@@ -36,13 +36,13 @@ jobs:
       - name: Test with Login Feature
         run: |
           cd tests
-          pytest test_login.py -s -q -x --dashboard --html=report.html --save-screenshot --maximize
+          pytest test_login.py -s -q -x --dashboard --self-contained-html --html=report.html --save-screenshot --maximize
 
       - name: Test with API Automation
         run: |
           cd /home/runner/work/Login-API-Automation/Login-API-Automation
           pytest api_testing.py -s -v
-          
+
 
       - name: Upload logs and screenshots from Github Action artifacts
         uses: actions/upload-artifact@v4 #change to v3
