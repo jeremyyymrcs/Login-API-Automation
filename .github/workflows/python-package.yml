@@ -2,9 +2,9 @@ name: Python package
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
   build:
@@ -12,7 +12,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: [ "3.11" ]
+        python-version: ["3.11"]
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python ${{ matrix.python-version }}
@@ -43,7 +43,6 @@ jobs:
           cd /home/runner/work/Login-API-Automation/Login-API-Automation
           pytest api_testing.py -s -v
 
-
       - name: Upload logs and screenshots from Github Action artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -52,8 +51,13 @@ jobs:
             tests/report.html
             tests/assets/**
 
-
-
-
-
-      
+  trigger_second_repo:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Second Repository Workflow
+        run: |
+          curl -X POST \
+            -H "Authorization: token ${{ secrets.githubactionsworkflow }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/repos/Jeremy-QA/business-centre-automation/dispatches \
+            -d '{"event_type": "trigger"}'
