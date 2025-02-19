@@ -2,9 +2,12 @@ name: Python package
 
 on:
   push:
-    branches: ["main"]
+    branches: [ "main" ]
   pull_request:
-    branches: ["main"]
+    branches: [ "main" ]
+  repository_dispatch:
+    types: [ trigger-workflow ]  # This should match the `event-type` in Repo B's workflow
+
 
 jobs:
   build:
@@ -12,7 +15,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.11"]
+        python-version: [ "3.11" ]
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python ${{ matrix.python-version }}
@@ -51,14 +54,14 @@ jobs:
             tests/report.html
             tests/assets/**
 
-  trigger_second_repo:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Trigger Second Repository Workflow
-        run: |
-          response=$(curl -X POST \
-            -H "Authorization: token ${{ secrets.WORKFLOW_OTHER_REPO }}" \
-            -H "Accept: application/vnd.github.v3+json" \
-            https://api.github.com/repos/Jeremy-QA/business-centre-automation/dispatches \
-            -d '{"event_type": "trigger"}')
-          echo "$response"
+#  trigger_second_repo:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Trigger Second Repository Workflow
+#        run: |
+#          response=$(curl -X POST \
+#            -H "Authorization: token ${{ secrets.WORKFLOW_OTHER_REPO }}" \
+#            -H "Accept: application/vnd.github.v3+json" \
+#            https://api.github.com/repos/Jeremy-QA/business-centre-automation/dispatches \
+#            -d '{"event_type": "trigger"}')
+#          echo "$response"
