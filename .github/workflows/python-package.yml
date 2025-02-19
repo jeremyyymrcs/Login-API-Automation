@@ -56,8 +56,9 @@ jobs:
     steps:
       - name: Trigger Second Repository Workflow
         run: |
-          curl -X POST \
+          response=$(curl -X POST \
             -H "Authorization: token ${{ secrets.githubactionsworkflow }}" \
             -H "Accept: application/vnd.github.v3+json" \
             https://api.github.com/repos/Jeremy-QA/business-centre-automation/dispatches \
-            -d '{"event_type": "trigger"}'
+            -d '{"event_type": "trigger"}')
+          echo "$response"
