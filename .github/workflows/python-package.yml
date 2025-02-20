@@ -54,35 +54,15 @@ jobs:
             tests/report.html
             tests/assets/**
 
+
       - name: Send results to Slack
         if: success() || failure()  # Send notification regardless of success/failure
         run: |
-          # List of files you want to include in Slack notification
-          artifact_files="tests/report.html"
-          
-          # Append the files from tests/assets
-          artifact_files+=$(find tests/assets/ -type f | sed 's/^/tests\/assets\//g' | tr '\n' ' ')
-      
-          # Escape special characters for JSON
-          artifact_files_escaped=$(echo "$artifact_files" | jq -Rs .)
-      
-          # Send the message to Slack with the list of files
           curl -X POST -H 'Content-type: application/json' \
             --data '{
-              "text": "Test results are available! :tada:\n\nHere is the [test report](https://github.com/jeremyyymrcs/Login-API-Automation/actions/runs/${{ github.run_id }})\n\nThe tests have completed. Check the results and logs.\n\nYou can also download the artifact from [this link](https://github.com/jeremyyymrcs/Login-API-Automation/actions/runs/${{ github.run_id }}/artifacts).\n\nArtifact Files:\n'"$artifact_files_escaped"'
+              "text": "Test results are available! :tada:\n\nHere is the [test report](https://github.com/jeremyyymrcs/Login-API-Automation/actions/runs/${{ github.run_id }})\n\nThe tests have completed. Check the results and logs.\n\nYou can also download the artifact from [this link](https://github.com/jeremyyymrcs/Login-API-Automation/actions/runs/${{ github.run_id }}/artifacts)."
             }' \
             ${{ secrets.SLACK_CHANNEL_REPORT_HOOK }}
-
-
-
-#      - name: Send results to Slack
-#        if: success() || failure()  # Send notification regardless of success/failure
-#        run: |
-#          curl -X POST -H 'Content-type: application/json' \
-#            --data '{
-#              "text": "Test results are available! :tada:\n\nHere is the [test report](https://github.com/jeremyyymrcs/Login-API-Automation/actions/runs/${{ github.run_id }})\n\nThe tests have completed. Check the results and logs.\n\nYou can also download the artifact from [this link](https://github.com/jeremyyymrcs/Login-API-Automation/actions/runs/${{ github.run_id }}/artifacts)."
-#            }' \
-#            ${{ secrets.SLACK_CHANNEL_REPORT_HOOK }}
 
 
 #      - name: Send results to Slack
