@@ -65,12 +65,18 @@ jobs:
         run: |
           zip -r artifact_files.zip ./artifact_files
 
+      - name: Upload the zip file as an artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifact-files-zip
+          path: artifact_files.zip
+
       - name: Send results to Slack
         if: success() || failure()  # Send notification regardless of success/failure
         run: |
           curl -X POST -H 'Content-type: application/json' \
             --data '{
-              "text": "Test results are available! :tada:\n\nHere is the [test report](https://github.com/jeremyyymrcs/Login-API-Automation/actions/runs/${{ github.run_id }})\n\nThe tests have completed. Check the results and logs.\n\nYou can also download the artifact from [this link](https://github.com/jeremyyymrcs/Login-API-Automation/actions/runs/${{ github.run_id }}/artifacts).\n\nAlso, here is the [zip file](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifact_files.zip)."
+              "text": "Test results are available! :tada:\n\nHere is the [test report](https://github.com/jeremyyymrcs/Login-API-Automation/actions/runs/${{ github.run_id }})\n\nThe tests have completed. Check the results and logs.\n\nYou can also download the artifact from [this link](https://github.com/jeremyyymrcs/Login-API-Automation/actions/runs/${{ github.run_id }}/artifacts).\n\nAlso, here is the [zip file](https://github.com/jeremyyymrcs/Login-API-Automation/actions/runs/${{ github.run_id }}/artifacts/$(echo ${{ github.run_id }}).zip)."
             }' \
             ${{ secrets.SLACK_CHANNEL_REPORT_HOOK }}
 
