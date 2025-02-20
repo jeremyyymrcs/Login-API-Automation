@@ -75,7 +75,7 @@ jobs:
           for file in tests/assets/*; do
             curl -X POST -H 'Authorization: Bearer ${{ secrets.SLACK_BOT_TOKEN }}' \
               -F file=@$file \
-              -F channels=${{ secrets.SLACK_CHANNEL_ID }} \
+              -F channels=${{ secrets.SLACK_TEST_REGRESSIONAL_CHANNEL_ID }} \
               -F initial_comment="Test asset file attached." \
               https://slack.com/api/files.upload
           done
