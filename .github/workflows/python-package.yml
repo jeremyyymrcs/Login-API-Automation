@@ -61,9 +61,9 @@ jobs:
           name: test-result(please extract the file before viewing)
           path: ./artifact_files
 
-      - name: Zip the artifact files
+      - name: Create ZIP of report and assets
         run: |
-          zip -r artifact_files.zip ./artifact_files
+          zip -r test-results.zip tests/report.html tests/assets/
 
       - name: Send results to Slack with the zip file
         if: success() || failure()  # Send notification regardless of success/failure
@@ -73,7 +73,16 @@ jobs:
               "text": "Test results are available! :tada:\n\nHere is the [test report](https://github.com/jeremyyymrcs/Login-API-Automation/actions/runs/${{ github.run_id }})\n\nThe tests have completed. Check the results and logs.\n\nAlso, the zip file containing the results is attached below."
             }' \
             ${{ secrets.SLACK_CHANNEL_REPORT_HOOK }}
-       
+
+      - name: Upload ZIP file to Slack
+        if: success() || failure()  # Send notification regardless of success/failure
+        run: |
+          curl -X POST -H 'Authorization: Bearer ${{ secrets.SLACK_CHANNEL_REPORT_HOOK }}' \
+            -F file=@test-results.zip \
+            -F channels=${{ secrets.SLACK_TEST_REGRESSIONAL_CHANNEL_ID }} \
+            -F initial_comment="Test report and assets are available! :tada:" \
+            https://slack.com/api/files.upload
+
 
 
 
