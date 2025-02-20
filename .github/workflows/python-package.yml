@@ -73,16 +73,10 @@ jobs:
               "text": "Test results are available! :tada:\n\nHere is the [test report](https://github.com/jeremyyymrcs/Login-API-Automation/actions/runs/${{ github.run_id }})\n\nThe tests have completed. Check the results and logs.\n\nAlso, the zip file containing the results is attached below."
             }' \
             ${{ secrets.SLACK_CHANNEL_REPORT_HOOK }}
-           
-           curl -F file=@artifact_files.zip \
-               -F "initial_comment=Here is the test results zip file" \
-               -F channels=${{ secrets.SLACK_TEST_REGRESSIONAL_CHANNEL_ID }} \  # Ensure channel ID is correct
-               -H "Authorization: Bearer ${{ secrets.SLACK_CHANNEL_REPORT_HOOK }}"  # Ensure the token is correct
-      
-#          curl -F file=@artifact_files.zip \
-#               -F "initial_comment=Here is the test results zip file" \
-#               -F channels=${{ secrets.SLACK_TEST_REGRESSIONAL_CHANNEL_ID }} \
-#               -H "Authorization: Bearer ${{ secrets.SLACK_CHANNEL_REPORT_HOOK }}"
+       
+
+
+
 
 
 #      - name: Send results to Slack
