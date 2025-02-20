@@ -53,3 +53,27 @@ jobs:
           path: |
             tests/report.html
             tests/assets/**
+
+
+#name: Trigger Repo A Workflow
+#
+#on:
+#  push:
+#    branches:
+#      - main  # Trigger on pushes to the main branch
+#
+#jobs:
+#  trigger:
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#      - name: Checkout Repo B
+#        uses: actions/checkout@v4
+#
+#      - name: Trigger workflow in Repo A
+#        uses: peter-evans/repository-dispatch@v1
+#        with:
+#          repository: jeremyyymrcs/Login-API-Automation  # Name of Repo A (replace if different)
+#          token: ${{ secrets.WORKFLOW_REPO_JEREMY_QA }}  # Repo B secret tokens
+#          event-type: trigger-workflow  # Custom event type for Repo A to listen to
+#          client-payload: '{"ref": "refs/heads/main"}'  # Specify the branch you want to trigger the workflow for
