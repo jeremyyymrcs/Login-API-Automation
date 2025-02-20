@@ -79,7 +79,7 @@ jobs:
         run: |
           curl -X POST -H 'Authorization: Bearer ${{ secrets.SLACK_BOT_TOKEN }}' \
             -F file=@test-results.zip \
-            -F channels="C08EVJ6P36U" \
+            -F channels=C08EVJ6P36U \
             -F initial_comment="Test report and assets are available! :tada:" \
             https://slack.com/api/files.upload 
 
