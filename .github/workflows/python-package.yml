@@ -63,13 +63,22 @@ jobs:
       - name: Send results to Slack
         if: success() || failure()  # Send notification regardless of success/failure
         run: |
-          # Upload the file to Slack using Slack API (files.upload)
-          curl -X POST -F file=@tests/report.html \
-            -F "initial_comment=Here is the test report!" \
-            -F channels="#your-slack-channel" \
-            -H "Authorization: Bearer ${{ secrets.SLACK_CHANNEL_REPORT_HOOK }}" \
-            https://slack.com/api/files.upload
-            
+          curl -X POST -H 'Content-type: application/json' \
+            --data '{
+              "text": "Test results are available! :tada:\n\nHere is the [test report](https://github.com/jeremyyymrcs/Login-API-Automation/actions/runs/${{ github.run_id }})\n\nThe tests have completed. Check the results and logs.\n\nYou can also download the artifact from [this link](https://github.com/jeremyyymrcs/Login-API-Automation/actions/runs/${{ github.run_id }}/artifacts)."
+            }' \
+            ${{ secrets.SLACK_CHANNEL_REPORT_HOOK }}
+
+      - name: Upload multiple files to Slack
+        if: success() || failure()
+        run: |
+          for file in tests/assets/*; do
+            curl -X POST -H 'Authorization: Bearer ${{ secrets.SLACK_BOT_TOKEN }}' \
+              -F file=@$file \
+              -F channels=${{ secrets.SLACK_CHANNEL_ID }} \
+              -F initial_comment="Test asset file attached." \
+              https://slack.com/api/files.upload
+          done
 
 
 #      - name: Send results to Slack
