@@ -77,12 +77,12 @@ jobs:
       - name: Upload multiple files to Slack
         if: success() || failure()
         run: |
-          ARTIFACT_DIR="test-result(please extract the file before viewing)"
-          
+          ARTIFACT_DIR="/home/runner/work/Login-API-Automation/Login-API-Automation/test-result(please extract the file before viewing)"
+
           # Debugging: List files before uploading
           echo "Listing files to upload to Slack:"
           ls -R $ARTIFACT_DIR
-          
+
           for file in $ARTIFACT_DIR/*; do
             if [ -f "$file" ]; then
               echo "Uploading file: $file"
