@@ -72,7 +72,8 @@ jobs:
       - name: Upload multiple files to Slack
         if: success() || failure()
         run: |
-          for file in tests/assets/*; do
+          ARTIFACT_DIR="test-result(please extract the file before viewing)"
+          for file in $ARTIFACT_DIR/*; do
             curl -X POST -H 'Authorization: Bearer ${{ secrets.SLACK_BOT_TOKEN }}' \
               -F file=@$file \
               -F channels=${{ secrets.SLACK_TEST_REGRESSIONAL_CHANNEL_ID }} \
