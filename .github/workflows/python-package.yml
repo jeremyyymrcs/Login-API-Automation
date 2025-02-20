@@ -105,6 +105,10 @@ jobs:
                 },
                 {
                   "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "Click below to download the test results."
+                  },
                   "accessory": {
                     "type": "button",
                     "text": {
@@ -116,6 +120,7 @@ jobs:
                 }
               ]
             }'
+
 
 
 #
