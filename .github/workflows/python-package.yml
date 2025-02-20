@@ -77,7 +77,7 @@ jobs:
       - name: Upload ZIP file to Slack
         if: success() || failure()  # Send notification regardless of success/failure
         run: |
-          curl -X POST -H 'Authorization: Bearer ${{ secrets.SLACK_BOT_TOKEN }}' \
+          curl -X POST -H 'Authorization: Bearer ${{ secrets.SLACK_BOT_TOKENss }}' \
             -F file=@test-results.zip \
             -F channels=C08EVJ6P36U \
             -F initial_comment="Test report and assets are available! :tada:" \
