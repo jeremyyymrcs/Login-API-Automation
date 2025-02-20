@@ -77,12 +77,14 @@ jobs:
       - name: Upload ZIP file to Slack
         if: success() || failure()  # Send notification regardless of success/failure
         run: |
-          # Upload the zip file to Slack channel
+          # Upload the zip file to Slack channel using chat.postMessage with blocks
           curl -X POST https://slack.com/api/files.upload \
             -H 'Authorization: Bearer ${{ secrets.SLACK_BOT_TOKEN }}' \
             -F file=@test-results.zip \
             -F "initial_comment=Test results are available! :tada:\n\nHere is the [test report](https://github.com/jeremyyymrcs/Login-API-Automation/actions/runs/${{ github.run_id }})\n\nThe tests have completed. Check the results and logs.\n\nAlso, the zip file containing the results is attached below." \
-            -F channels=${{ secrets.SLACK_TEST_REGRESSIONAL_CHANNEL_ID }}
+            -F channels=${{ secrets.SLACK_TEST_REGRESSIONAL_CHANNEL_ID }} \
+            -F "title=Test Results" \
+            -F "filetype=zip" 
 
 
 
