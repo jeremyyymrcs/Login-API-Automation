@@ -69,16 +69,31 @@ jobs:
             }' \
             ${{ secrets.SLACK_CHANNEL_REPORT_HOOK }}
 
+      - name: List downloaded artifact contents
+        run: |
+          echo "Listing files in the artifact directory:"
+          ls -R ./test-result\ \(please\ extract\ the\ file\ before\ viewing\)/
+
       - name: Upload multiple files to Slack
         if: success() || failure()
         run: |
           ARTIFACT_DIR="test-result(please extract the file before viewing)"
+          
+          # Debugging: List files before uploading
+          echo "Listing files to upload to Slack:"
+          ls -R $ARTIFACT_DIR
+          
           for file in $ARTIFACT_DIR/*; do
-            curl -X POST -H 'Authorization: Bearer ${{ secrets.SLACK_BOT_TOKEN }}' \
-              -F file=@$file \
-              -F channels=${{ secrets.SLACK_TEST_REGRESSIONAL_CHANNEL_ID }} \
-              -F initial_comment="Test asset file attached." \
-              https://slack.com/api/files.upload
+            if [ -f "$file" ]; then
+              echo "Uploading file: $file"
+              curl -X POST -H 'Authorization: Bearer ${{ secrets.SLACK_BOT_TOKEN }}' \
+                -F file=@$file \
+                -F channels=${{ secrets.SLACK_TEST_REGRESSIONAL_CHANNEL_ID }} \
+                -F initial_comment="Test asset file attached." \
+                https://slack.com/api/files.upload
+            else
+              echo "No valid file found at $file"
+            fi
           done
 
 
