@@ -60,27 +60,21 @@ jobs:
         with:
           name: test-result(please extract the file before viewing)
 
-      - name: List downloaded artifact contents
-        id: list-files
-        run: |
-          echo "Listing files in the artifact directory:"
-          artifact_files=$(ls -R './test-result (please extract the file before viewing)/')
-          echo "$artifact_files" > artifact_files.txt
-
       - name: Send results to Slack
         if: success() || failure()  # Send notification regardless of success/failure
         run: |
-          # Read the list of files from artifact_files.txt
-          artifact_files=$(cat artifact_files.txt)
-          
+          # List of files you want to include in Slack notification
+          artifact_files="tests/report.html\n"
+          artifact_files+=$(find tests/assets/ -type f)
+
           # Send the message to Slack with the list of files
           curl -X POST -H 'Content-type: application/json' \
             --data '{
               "text": "Test results are available! :tada:\n\nHere is the [test report](https://github.com/jeremyyymrcs/Login-API-Automation/actions/runs/${{ github.run_id }})\n\nThe tests have completed. Check the results and logs.\n\nYou can also download the artifact from [this link](https://github.com/jeremyyymrcs/Login-API-Automation/actions/runs/${{ github.run_id }}/artifacts).\n\nArtifact Files:\n'\"$artifact_files\"'
             }' \
             ${{ secrets.SLACK_CHANNEL_REPORT_HOOK }}
-          
-    
+
+
 
 #      - name: Send results to Slack
 #        if: success() || failure()  # Send notification regardless of success/failure
