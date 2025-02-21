@@ -39,9 +39,9 @@ jobs:
       - name: Test with Login Feature
         run: |
           cd tests
-          pytest test_login.py -s -q -x --dashboard --html=report.html --save-screenshot --maximize  | tee result.log
-              # Make sure any logs from the test itself are also captured
-          cat test.log >> result.log  # Append logs from test.log if used
+          pytest test_login.py -s -q -x --dashboard --html=report.html --save-screenshot --maximize  | tee result.log   
+          # Check if test.log exists before trying to append it to result.log
+          if [ -f test.log ]; then cat test.log >> result.log; fi
 
       - name: Send logs to Slack
         if: success() || failure()
