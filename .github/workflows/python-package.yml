@@ -39,19 +39,15 @@ jobs:
       - name: Test with Login Feature
         run: |
           cd tests
-          pytest test_login.py -s -q -x --dashboard --html=report.html --save-screenshot --maximize  --capture=tee-sys | tee result.log
+          pytest test_login.py -s -q -x --dashboard --html=report.html --save-screenshot --maximize  | tee result.log
+              # Make sure any logs from the test itself are also captured
+          cat test.log >> result.log  # Append logs from test.log if used
 
       - name: Send logs to Slack
         if: success() || failure()
         run: |
-          # Capture logs both from the file and logger output
-          LOGS=$(cat tests/result.log)
-          # Add any additional logging output to the logs here
-          LOGS+=$'\n'$(cat tests/result.log)
-
-          # Send the combined logs to Slack
           curl -X POST -H 'Content-type: application/json' \
-          --data "{\"text\":\"Test logs:\n\`\`\`$LOGS\`\`\`\"}" \
+          --data "{\"text\":\"Test logs:\n\`\`\`$(cat tests/result.log)\`\`\`\"}" \
           ${{ secrets.SLACK_CHANNEL_REPORT_HOOK }}
 
       - name: Test with API Automation
