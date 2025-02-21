@@ -77,31 +77,21 @@ jobs:
       - name: Upload ZIP file to Slack
         if: success() || failure()  # Send notification regardless of success/failure
         run: |
-          # Step 1: Request External Upload URL from Slack
-          UPLOAD_URL=$(curl -X POST https://slack.com/api/files.getUploadURLExternal \
-            -H 'Authorization: Bearer ${{ secrets.SLACK_BOT_TOKEN }}' \
-            -F channels=${{ secrets.SLACK_TEST_REGRESSIONAL_CHANNEL_ID }} | jq -r .url)
+          # Step 1: Get the upload URL from Slack
+          UPLOAD_URL=$(curl -X POST "https://slack.com/api/files.getUploadURLExternal" \
+            -H "Authorization: Bearer ${{ secrets.SLACK_BOT_TOKEN }}" \
+            -d "channels=${{ secrets.SLACK_TEST_REGRESSIONAL_CHANNEL_ID }}" \
+            -d "filetype=zip" \
+            -d "filename=test-results.zip" | jq -r '.url')
       
-          # Check if URL was successfully returned
-          if [ "$UPLOAD_URL" == "null" ]; then
-            echo "Error obtaining upload URL from Slack"
-            exit 1
-          fi
-      
-          # Step 2: Upload the ZIP file to Slack via the external URL
+          # Step 2: Upload the file to Slack using the obtained URL
           curl -X POST "$UPLOAD_URL" \
-            -F file=@artifact_files.zip \
+            -H "Authorization: Bearer ${{ secrets.SLACK_BOT_TOKEN }}" \
+            -F file=@test-results.zip \
+            -F "initial_comment=Test results are available! :tada:\n\nHere is the [test report](https://github.com/jeremyyymrcs/Login-API-Automation/actions/runs/${{ github.run_id }})\n\nThe tests have completed. Check the results and logs.\n\nAlso, the zip file containing the results is attached below." \
+            -F channels=${{ secrets.SLACK_TEST_REGRESSIONAL_CHANNEL_ID }} \
             -F "filename=test-results.zip" \
             -F "filetype=zip"
-      
-          # Step 3: Send Slack message with the test results link
-          curl -X POST https://slack.com/api/chat.postMessage \
-            -H 'Authorization: Bearer ${{ secrets.SLACK_BOT_TOKEN }}' \
-            -H 'Content-Type: application/json' \
-            -d '{
-              "channel": "${{ secrets.SLACK_TEST_REGRESSIONAL_CHANNEL_ID }}",
-              "text": "Test results are available! :tada: Here is the [test report](https://github.com/jeremyyymrcs/Login-API-Automation/actions/runs/${{ github.run_id }})\nThe tests have completed. Check the results and logs.\nThe zip file with the test results is attached below."
-            }'
 
 
 #
