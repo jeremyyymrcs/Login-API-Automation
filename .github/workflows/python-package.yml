@@ -40,6 +40,7 @@ jobs:
         run: |
           cd tests
           pytest test_login.py -s -q -x --dashboard --html=report.html --save-screenshot --maximize
+          tail -n 100 tests/report.html # Get last 100 lines of the report
 
       - name: Test with API Automation
         run: |
@@ -66,25 +67,16 @@ jobs:
         run: |
           zip -r test-results.zip tests/report.html tests/assets/
 
-      - name: Upload the results to Slack
+      - name: Send test logs to Slack
         run: |
-          # Obtain upload URL from Slack
-          upload_url=$(curl -X POST https://slack.com/api/files.getUploadURLExternal \
-            -H "Authorization: Bearer ${{ secrets.SLACK_BOT_TOKEN }}" \
-            -d file="test-results.zip" \
-            -d channels="C08EVJ6P36U" \
-            -d title="Test Results for Commit ${GITHUB_SHA}")
-          
-          # Upload the file to Slack
-          curl -X POST https://slack.com/api/files.completeUploadExternal \
-            -H "Authorization: Bearer ${{ secrets.SLACK_BOT_TOKEN }}" \
-            -d url="${upload_url}" \
-            -d file="test-results.zip" \
-            -d channel="C08EVJ6P36U" \
-            -d title="Test Results for Commit ${GITHUB_SHA}" \
-            -d filetype="zip" \
-            -d initial_comment="Test results from commit ${GITHUB_SHA}" \
-            -d thread_ts="${GITHUB_SHA}"  # Optional: This creates a thread for each commit's result
+          TEST_LOG=$(tail -n 100 tests/report.html) # Get the last 100 lines of the test report
+          curl -X POST -H 'Content-type: application/json' \
+            --data "{
+              \"text\": \"*Test Results:*\n\n$TEST_LOG\"
+            }" \
+            ${{ secrets.SLACK_WEBHOOK_URL }}
+
+
           
         
 
