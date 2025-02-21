@@ -78,19 +78,30 @@ jobs:
         if: success() || failure()  # Send notification regardless of success/failure
         run: |
           # Step 1: Get the upload URL from Slack using files.getUploadURLExternal
-          UPLOAD_URL=$(curl -X POST https://slack.com/api/files.getUploadURLExternal \
+          RESPONSE=$(curl -X POST https://slack.com/api/files.getUploadURLExternal \
             -H 'Authorization: Bearer ${{ secrets.SLACK_BOT_TOKEN }}' \
             -H 'Content-Type: application/json' \
             -d '{
                   "channels": ["'${{ secrets.SLACK_TEST_REGRESSIONAL_CHANNEL_ID }}'"]
-                }' | jq -r .url)
-      
+                }')
+          
+          echo "Response from Slack: $RESPONSE"
+          
+          # Extract the URL from the response
+          UPLOAD_URL=$(echo "$RESPONSE" | jq -r .url)
+          
+          # Check if the URL is valid
+          if [[ -z "$UPLOAD_URL" || "$UPLOAD_URL" == "null" ]]; then
+            echo "Error: Failed to get a valid upload URL from Slack."
+            exit 1
+          fi
+          
           # Step 2: Upload the file using the obtained URL
           curl -X POST $UPLOAD_URL \
             -F file=@test-results.zip \
             -F "filename=test-results.zip" \
             -F "filetype=zip"
-      
+          
           # Step 3: Complete the upload and add the initial comment
           curl -X POST https://slack.com/api/files.completeUploadExternal \
             -H 'Authorization: Bearer ${{ secrets.SLACK_BOT_TOKEN }}' \
@@ -99,6 +110,7 @@ jobs:
                   "file": "'"$UPLOAD_URL"'",
                   "initial_comment": "Test results are available! :tada:\n\nHere is the [test report](https://github.com/jeremyyymrcs/Login-API-Automation/actions/runs/${{ github.run_id }})\n\nThe tests have completed. Check the results and logs.\n\nAlso, the zip file containing the results is attached below."
                 }'
+
 
 
 
