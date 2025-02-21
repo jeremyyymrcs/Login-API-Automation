@@ -67,17 +67,30 @@ jobs:
           zip -r test-results.zip tests/report.html tests/assets/
           
           
-          # Send results to Slack with the artifact download URL
+      # Step 2: Fetch Artifact Download URL using GitHub API
+      - name: Fetch artifact download URL
+        id: get-artifact-url
+        run: |
+          # Set GitHub API URL to get the artifact details for the current run
+          API_URL="https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts"
+      
+          # Make API request to get the artifact details
+          response=$(curl -s -H "Authorization: Bearer ${{ secrets.SLACK_CHANNEL_REPORT_HOOK }}" $API_URL)
+      
+          # Extract the download URL of the first artifact (assuming there’s only one artifact)
+          artifact_download_url=$(echo $response | jq -r '.artifacts[0].archive_download_url')
+      
+          # Save the download URL to be used later
+          echo "artifact_download_url=$artifact_download_url" >> $GITHUB_ENV
+
+      # Step 3: Send results to Slack with the artifact download URL
       - name: Send results to Slack with the artifact download URL
         if: success() || failure()  # Send notification regardless of success/failure
         run: |
-          # Construct the dynamic artifact URL
-          ARTIFACT_URL="https://github.com/jeremyyymrcs/Login-API-Automation/actions/runs/${{ github.run_id }}/artifacts/${{ steps.upload-artifact.outputs.artifact_id }}"
-      
-          # Send the message to Slack
+          # Send the Slack notification with the artifact URL
           curl -X POST -H 'Content-type: application/json' \
             --data '{
-              "text": "Test results are available! :tada:\n\nHere is the [test report]('"${ARTIFACT_URL}"')\n\nThe tests have completed. Check the results and logs.\n\nAlso, the zip file containing the results is attached below."
+              "text": "Test results are available! :tada:\n\nHere is the [test report]('"${{ env.artifact_download_url }}"')\n\nThe tests have completed. Check the results and logs.\n\nAlso, the zip file containing the results is attached below."
             }' \
             ${{ secrets.SLACK_CHANNEL_REPORT_HOOK }}
           
