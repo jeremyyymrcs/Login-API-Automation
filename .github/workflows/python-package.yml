@@ -66,25 +66,27 @@ jobs:
         run: |
           zip -r test-results.zip tests/report.html tests/assets/
 
-      - name: Upload Test Results to Slack
+      - name: Upload the results to Slack
         run: |
-          curl -X POST "https://slack.com/api/files.getUploadURLExternal" \
+          # Obtain upload URL from Slack
+          upload_url=$(curl -X POST https://slack.com/api/files.getUploadURLExternal \
             -H "Authorization: Bearer ${{ secrets.SLACK_BOT_TOKEN }}" \
-            -H "Content-Type: application/json" \
-            -d '{"channels": "SLACK_TEST_REGRESSIONAL_CHANNEL_ID"}' \
-            -o response.json
-
-          UPLOAD_URL=$(jq -r '.url' response.json)
-
-          curl -X POST $UPLOAD_URL \
-            -F file=@test-results.zip \
-            -F channels="SLACK_TEST_REGRESSIONAL_CHANNEL_ID" \
-            -F title="Test Results: $(date)" \
+            -d file="test-results.zip" \
+            -d channels="C08EVJ6P36U" \
+            -d title="Test Results for Commit ${GITHUB_SHA}")
+          
+          # Upload the file to Slack
+          curl -X POST https://slack.com/api/files.completeUploadExternal \
             -H "Authorization: Bearer ${{ secrets.SLACK_BOT_TOKEN }}" \
-            -o upload_response.json
-
-          echo "Slack upload response:"
-          cat upload_response.json
+            -d url="${upload_url}" \
+            -d file="test-results.zip" \
+            -d channel="C08EVJ6P36U" \
+            -d title="Test Results for Commit ${GITHUB_SHA}" \
+            -d filetype="zip" \
+            -d initial_comment="Test results from commit ${GITHUB_SHA}" \
+            -d thread_ts="${GITHUB_SHA}"  # Optional: This creates a thread for each commit's result
+          
+        
 
 #      - name: Send results to Slack with the zip file
 #        if: success() || failure()  # Send notification regardless of success/failure
