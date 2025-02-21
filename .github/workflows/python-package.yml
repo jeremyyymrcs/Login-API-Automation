@@ -39,12 +39,12 @@ jobs:
       - name: Test with Login Feature
         run: |
           cd tests
-          pytest test_login.py -s -q -x --dashboard --html=report.html --save-screenshot --maximize | tee >(curl -X POST -H 'Content-type: application/json' --data '{"text": "Pytest Log: \n\n'"$(cat)"'\n\n"}' ${{ secrets.SLACK_CHANNEL_REPORT_HOOK }}) > result.log
+          pytest test_login.py -s -x --dashboard --html=report.html --save-screenshot --maximize | tee >(curl -X POST -H 'Content-type: application/json' --data '{"text": "Pytest Log: \n\n'"$(cat)"'\n\n"}' ${{ secrets.SLACK_CHANNEL_REPORT_HOOK }}) >> result.log
 
       - name: Test with API Automation
         run: |
           cd /home/runner/work/Login-API-Automation/Login-API-Automation
-          pytest api_testing.py -s -v
+          pytest api_testing.py -s -v 
 
       - name: Upload logs and screenshots from Github Action artifacts
         uses: actions/upload-artifact@v4
