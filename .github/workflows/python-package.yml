@@ -39,29 +39,16 @@ jobs:
       - name: Test with Login Feature
         run: |
           cd tests
-          pytest test_login.py -s -q -x --dashboard --html=report.html --save-screenshot --maximize
-        id: login_test
-      - name: Send Test Logs to Slack
-        if: always()  # This ensures it runs regardless of success/failure of the previous step
+          pytest test_login.py -s -q -x --dashboard --html=report.html --save-screenshot --maximize > result.log || echo "Tests failed!" >> result.log    
+
+      - name: Upload pytest logs to Slack
+        if: failure() || success()  # Run this step regardless of whether the tests pass or fail
         run: |
-          LOG_FILE=tests/report.html
-          # Check if the log file exists and read it
-          if [ -f "$LOG_FILE" ]; then
-            LOG_CONTENT=$(cat $LOG_FILE)
-          else
-            LOG_CONTENT="No logs available."
-          fi
-      
-          # Escape special characters and limit the content size for Slack
-          ESCAPED_LOG_CONTENT=$(echo "$LOG_CONTENT" | jq -Rs .)
-          SHORTENED_LOG_CONTENT=$(echo "$ESCAPED_LOG_CONTENT" | head -c 4000)  # Limit to 4000 characters
-      
-          # Send the logs to Slack
-          curl -X POST -H 'Content-type: application/json' \
-            --data "{
-              \"text\": \"Test Results for Login Feature:\n\${SHORTENED_LOG_CONTENT}\"
-            }" ${{ secrets.SLACK_CHANNEL_REPORT_HOOK }}
-          
+          curl -X POST -H 'Content-type: application/json' --data @- ${{ secrets.SLACK_CHANNEL_REPORT_HOOK }} <<EOF
+          {
+            "text": "Test results from GitHub Actions: \n\n$(cat result.log)"
+          }
+          EOF
 
       - name: Test with API Automation
         run: |
