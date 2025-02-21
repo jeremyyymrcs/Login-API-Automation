@@ -40,12 +40,11 @@ jobs:
         run: |
           cd tests
           pytest test_login.py -s -q -x --dashboard --html=report.html --save-screenshot --maximize
-          tee >(curl -X POST -H 'Content-type: application/json' --data '{"text": "Pytest Log: \n\n'"$(cat)"'\n\n"}' ${{ secrets.SLACK_WEBHOOK_URL }}) > result.log
 
       - name: Test with API Automation
         run: |
           cd /home/runner/work/Login-API-Automation/Login-API-Automation
-          pytest api_testing.py -s -v 
+          pytest api_testing.py -s -v
 
       - name: Upload logs and screenshots from Github Action artifacts
         uses: actions/upload-artifact@v4
@@ -67,11 +66,25 @@ jobs:
         run: |
           zip -r test-results.zip tests/report.html tests/assets/
 
-      - name: Final message to Slack
+      - name: Upload Test Results to Slack
         run: |
-          curl -X POST -H 'Content-type: application/json' --data '{"text": "Test Run Complete! Final Report is available."}' ${{ secrets.SLACK_CHANNEL_REPORT_HOOK }}          
-          
-          
+          curl -X POST "https://slack.com/api/files.getUploadURLExternal" \
+            -H "Authorization: Bearer ${{ secrets.SLACK_BOT_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -d '{"channels": "SLACK_TEST_REGRESSIONAL_CHANNEL_ID"}' \
+            -o response.json
+
+          UPLOAD_URL=$(jq -r '.url' response.json)
+
+          curl -X POST $UPLOAD_URL \
+            -F file=@test-results.zip \
+            -F channels="SLACK_TEST_REGRESSIONAL_CHANNEL_ID" \
+            -F title="Test Results: $(date)" \
+            -H "Authorization: Bearer ${{ secrets.SLACK_BOT_TOKEN }}" \
+            -o upload_response.json
+
+          echo "Slack upload response:"
+          cat upload_response.json
 
 #      - name: Send results to Slack with the zip file
 #        if: success() || failure()  # Send notification regardless of success/failure
