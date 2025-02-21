@@ -67,14 +67,21 @@ jobs:
 
       - name: Get Upload URL from Slack
         run: |
-          UPLOAD_URL=$(curl -X POST \
+          response=$(curl -X POST \
             -H "Authorization: Bearer ${{ secrets.SLACK_BOT_TOKEN }}" \
             -H "Content-Type: application/json" \
             --data '{"file_name":"test-results.zip","channels":["${{ secrets.SLACK_CHANNEL_ID }}"]}' \
-            https://slack.com/api/files.getUploadURLExternal | jq -r '.url')
+            https://slack.com/api/files.getUploadURLExternal)
+          echo "Slack API Response: $response"
+          UPLOAD_URL=$(echo $response | jq -r '.url')
+          echo "Upload URL: $UPLOAD_URL"
 
       - name: Upload ZIP to Slack
         run: |
+          if [ -z "$UPLOAD_URL" ]; then
+            echo "Error: Upload URL is empty. Exiting."
+            exit 1
+          fi
           curl -X POST \
             -H "Content-Type: multipart/form-data" \
             -F file=@test-results.zip \
@@ -91,6 +98,8 @@ jobs:
               "text": "Test results are available! :tada:\n\nHere is the [test report](https://github.com/jeremyyymrcs/Login-API-Automation/actions/runs/${{ github.run_id }})\n\nThe tests have completed. Check the results and logs.\n\nAlso, the zip file containing the results is attached below."
             }' \
             ${{ secrets.SLACK_CHANNEL_REPORT_HOOK }}
+
+      
 
 #      - name: Send results to Slack with the zip file
 #        if: success() || failure()  # Send notification regardless of success/failure
