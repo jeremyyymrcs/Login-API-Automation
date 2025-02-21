@@ -39,7 +39,7 @@ jobs:
       - name: Test with Login Feature
         run: |
           cd tests
-          pytest test_login.py -s -q -x --dashboard --html=report.html --save-screenshot --maximize  | tee result.log   
+          pytest test_login.py -s -q -x --dashboard --html=report.html --save-screenshot --maximize  --log-file=tests/result.log   
           cat result.log
 
       - name: Send logs to Slack
