@@ -40,12 +40,13 @@ jobs:
         run: |
           cd tests
           pytest test_login.py -s -q -x --dashboard --html=report.html --save-screenshot --maximize  | tee result.log   
+          cat result.log
 
       - name: Send logs to Slack
         if: success() || failure()
         run: |
           curl -X POST -H 'Content-type: application/json' \
-          --data "{\"text\":\"Test logs:\n\`\`\`$(cat tests/my_custom.log)\`\`\`\"}" \
+          --data "{\"text\":\"Test logs:\n\`\`\`$(cat tests/result.log)\`\`\`\"}" \
           ${{ secrets.SLACK_CHANNEL_REPORT_HOOK }}
 
       - name: Test with API Automation
