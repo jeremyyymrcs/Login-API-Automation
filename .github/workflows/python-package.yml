@@ -39,12 +39,13 @@ jobs:
       - name: Test with Login Feature
         run: |
           cd tests
-          pytest test_login.py -s -q -x --dashboard --html=report.html --save-screenshot --maximize  --log-file=tests/result.log   
-          cat result.log
+          pytest test_login.py -s -q -x --dashboard --html=report.html --save-screenshot --maximize  2>&1 | tee result.log   
+          
 
       - name: Send logs to Slack
         if: success() || failure()
         run: |
+          # Send the result.log contents to Slack
           curl -X POST -H 'Content-type: application/json' \
           --data "{\"text\":\"Test logs:\n\`\`\`$(cat tests/result.log)\`\`\`\"}" \
           ${{ secrets.SLACK_CHANNEL_REPORT_HOOK }}
@@ -77,8 +78,8 @@ jobs:
 
 
 
-          
-        
+
+
 
 #      - name: Send results to Slack with the zip file
 #        if: success() || failure()  # Send notification regardless of success/failure
