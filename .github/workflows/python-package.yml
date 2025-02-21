@@ -77,21 +77,29 @@ jobs:
       - name: Upload ZIP file to Slack
         if: success() || failure()  # Send notification regardless of success/failure
         run: |
-          # Step 1: Get the upload URL from Slack
-          UPLOAD_URL=$(curl -X POST "https://slack.com/api/files.getUploadURLExternal" \
-            -H "Authorization: Bearer ${{ secrets.SLACK_BOT_TOKEN }}" \
-            -d "channels=${{ secrets.SLACK_TEST_REGRESSIONAL_CHANNEL_ID }}" \
-            -d "filetype=zip" \
-            -d "filename=test-results.zip" | jq -r '.url')
+          # Step 1: Get the upload URL from Slack using files.getUploadURLExternal
+          UPLOAD_URL=$(curl -X POST https://slack.com/api/files.getUploadURLExternal \
+            -H 'Authorization: Bearer ${{ secrets.SLACK_BOT_TOKEN }}' \
+            -H 'Content-Type: application/json' \
+            -d '{
+                  "channels": ["'${{ secrets.SLACK_TEST_REGRESSIONAL_CHANNEL_ID }}'"]
+                }' | jq -r .url)
       
-          # Step 2: Upload the file to Slack using the obtained URL
-          curl -X POST "$UPLOAD_URL" \
-            -H "Authorization: Bearer ${{ secrets.SLACK_BOT_TOKEN }}" \
+          # Step 2: Upload the file using the obtained URL
+          curl -X POST $UPLOAD_URL \
             -F file=@test-results.zip \
-            -F "initial_comment=Test results are available! :tada:\n\nHere is the [test report](https://github.com/jeremyyymrcs/Login-API-Automation/actions/runs/${{ github.run_id }})\n\nThe tests have completed. Check the results and logs.\n\nAlso, the zip file containing the results is attached below." \
-            -F channels=${{ secrets.SLACK_TEST_REGRESSIONAL_CHANNEL_ID }} \
             -F "filename=test-results.zip" \
             -F "filetype=zip"
+      
+          # Step 3: Complete the upload and add the initial comment
+          curl -X POST https://slack.com/api/files.completeUploadExternal \
+            -H 'Authorization: Bearer ${{ secrets.SLACK_BOT_TOKEN }}' \
+            -H 'Content-Type: application/json' \
+            -d '{
+                  "file": "'"$UPLOAD_URL"'",
+                  "initial_comment": "Test results are available! :tada:\n\nHere is the [test report](https://github.com/jeremyyymrcs/Login-API-Automation/actions/runs/${{ github.run_id }})\n\nThe tests have completed. Check the results and logs.\n\nAlso, the zip file containing the results is attached below."
+                }'
+
 
 
 #
