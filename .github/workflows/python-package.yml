@@ -65,10 +65,46 @@ jobs:
         run: |
           zip -r test-results.zip tests/report.html tests/assets/
 
+      - name: Get upload URL from Slack
+        id: get_upload_url
+        run: |
+          upload_url=$(curl -s -X POST \
+            -H "Authorization: Bearer ${{ secrets.SLACK_BOT_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            --data '{
+              "filename": "test-results.zip",
+              "filetype": "zip",
+              "channels": "${{ secrets.SLACK_CHANNEL_ID }}",
+              "title": "Test Results"
+            }' \
+            https://slack.com/api/files.getUploadURLExternal | jq -r '.url')
+          echo "Upload URL: $upload_url"
+          echo "::set-output name=upload_url::$upload_url"
+
+      - name: Upload the file to Slack using the obtained URL
+        run: |
+          curl -X POST \
+            -F file=@test-results.zip \
+            -F "filetype=zip" \
+            -F "title=Test Results" \
+            "${{ steps.get_upload_url.outputs.upload_url }}"
+
+      - name: Complete the upload
+        run: |
+          curl -s -X POST \
+            -H "Authorization: Bearer ${{ secrets.SLACK_BOT_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            --data '{
+              "file": "${{ steps.get_upload_url.outputs.upload_url }}",
+              "initial_comment": "Test results are available! :tada:\n\nHere is the [test report](https://github.com/jeremyyymrcs/Login-API-Automation/actions/runs/${{ github.run_id }})\n\nThe tests have completed. Check the results and logs.\n\nAlso, the zip file containing the results is attached below.",
+              "channels": "${{ secrets.SLACK_CHANNEL_ID }}"
+            }' \
+            https://slack.com/api/files.completeUploadExternal
+      
+
       - name: Send results to Slack with the zip file
         if: success() || failure()  # Send notification regardless of success/failure
         run: |
-          curl -F file=@test-results.zip \
                -F "initial_comment=Test results are available! :tada:\n\nHere is the [test report](https://github.com/jeremyyymrcs/Login-API-Automation/actions/runs/${{ github.run_id }})\n\nThe tests have completed. Check the results and logs.\n\nAlso, the zip file containing the results is attached below." \
                -F channels=${{ secrets.SLACK_CHANNEL_ID }} \
                -H "Authorization: Bearer ${{ secrets.SLACK_BOT_TOKEN }}"
