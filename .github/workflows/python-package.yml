@@ -40,7 +40,7 @@ jobs:
         run: |
           cd tests
           pytest test_login.py -s -q -x --dashboard --html=report.html --save-screenshot --maximize
-          tail -n 100 tests/report.html # Get last 100 lines of the report
+          
 
       - name: Test with API Automation
         run: |
@@ -54,6 +54,7 @@ jobs:
           path: |
             tests/report.html
             tests/assets/**
+            tail -n 100 tests/report.html # Get last 100 lines of the report
         if: always()  # This ensures the step runs regardless of previous success or failure
 
 
