@@ -69,13 +69,14 @@ jobs:
       - name: Send results to Slack with the zip file
         if: success() || failure()  # Send notification regardless of success/failure
         run: |
-          # Set the artifact download URL
-          ARTIFACT_URL="https://github.com/${{ github.repository }}/suites/${{ github.run_id }}/artifacts/${{ steps.download-artifact.outputs.artifact_id }}"
+          # Define the path of the zip file
+          ZIP_FILE="./artifact_files/test-results.zip"
       
-          # Post to Slack with the artifact download link
+          # Upload the zip file to Slack
           curl -X POST \
-            -F "initial_comment=Test results are available! :tada:\n\nHere is the [test report](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})\n\nThe tests have completed. Check the results and logs.\n\nAlso, the zip file containing the results is available for download: ${ARTIFACT_URL}" \
-            -F channels=${{ secrets.SLACK_CHANNEL_ID }} \
+            -F "file=@${ZIP_FILE}" \
+            -F "initial_comment=Test results are available! :tada:\n\nHere is the [test report](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})\n\nThe tests have completed. Check the results and logs." \
+            -F "channels=${{ secrets.SLACK_CHANNEL_ID }}" \
             -H "Authorization: Bearer ${{ secrets.SLACK_BOT_TOKEN }}"
 
 
