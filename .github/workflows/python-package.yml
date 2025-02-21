@@ -65,55 +65,15 @@ jobs:
         run: |
           zip -r test-results.zip tests/report.html tests/assets/
 
-      - name: Get Upload URL from Slack
-        run: |
-          # Get the length (size) of the file
-          file_size=$(stat -c %s "test-results.zip")
-          
-          response=$(curl -X POST \
-            -H "Authorization: Bearer ${{ secrets.SLACK_BOT_TOKEN }}" \
-            -H "Content-Type: application/json" \
-            --data "{\"filename\":\"test-results.zip\",\"channels\":[\"${{ secrets.SLACK_CHANNEL_ID }}\"],\"length\":$file_size}" \
-            https://slack.com/api/files.getUploadURLExternal)
-          
-          echo "Slack API Response: $response"
-          UPLOAD_URL=$(echo $response | jq -r '.url')
-          echo "Upload URL: $UPLOAD_URL"
-
-      - name: Upload ZIP to Slack
-        run: |
-          if [ -z "$UPLOAD_URL" ]; then
-            echo "Error: Upload URL is empty. Exiting."
-            exit 1
-          fi
-          curl -X POST \
-            -H "Content-Type: multipart/form-data" \
-            -F file=@test-results.zip \
-            -F filename="test-results.zip" \
-            -F channels="${{ secrets.SLACK_CHANNEL_ID }}" \
-            -F filetype="zip" \
-            $UPLOAD_URL
-
       - name: Send results to Slack with the zip file
         if: success() || failure()  # Send notification regardless of success/failure
         run: |
-          curl -X POST -H 'Content-type: application/json' \
-            --data '{
-              "text": "Test results are available! :tada:\n\nHere is the [test report](https://github.com/jeremyyymrcs/Login-API-Automation/actions/runs/${{ github.run_id }})\n\nThe tests have completed. Check the results and logs.\n\nAlso, the zip file containing the results is attached below."
-            }' \
-            ${{ secrets.SLACK_CHANNEL_REPORT_HOOK }}
+          curl -F file=@test-results.zip \
+               -F "initial_comment=Test results are available! :tada:\n\nHere is the [test report](https://github.com/jeremyyymrcs/Login-API-Automation/actions/runs/${{ github.run_id }})\n\nThe tests have completed. Check the results and logs.\n\nAlso, the zip file containing the results is attached below." \
+               -F channels=${{ secrets.SLACK_CHANNEL_ID }} \
+               -H "Authorization: Bearer ${{ secrets.SLACK_BOT_TOKEN }}"
 
-      
 
-#      - name: Send results to Slack with the zip file
-#        if: success() || failure()  # Send notification regardless of success/failure
-#        run: |
-#          curl -X POST -H 'Content-type: application/json' \
-#            --data '{
-#              "text": "Test results are available! :tada:\n\nHere is the [test report](https://github.com/jeremyyymrcs/Login-API-Automation/actions/runs/${{ github.run_id }})\n\nThe tests have completed. Check the results and logs.\n\nAlso, the zip file containing the results is attached below."
-#            }' \
-#            ${{ secrets.SLACK_CHANNEL_REPORT_HOOK }}
-#
 #      - name: Upload ZIP file to Slack
 #        if: success() || failure()  # Send notification regardless of success/failure
 #        run: |
@@ -127,7 +87,16 @@ jobs:
 #            -F "filetype=zip"
 
 
-#
+
+
+
+
+
+
+
+
+
+
 
 
 
