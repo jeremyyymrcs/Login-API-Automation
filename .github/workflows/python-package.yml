@@ -77,14 +77,29 @@ jobs:
       - name: Upload ZIP file to Slack
         if: success() || failure()  # Send notification regardless of success/failure
         run: |
-          # Upload the zip file to Slack channel using the new recommended method
-          curl -X POST https://slack.com/api/files.upload \
+          # Step 1: Request the external upload URL
+          UPLOAD_URL=$(curl -X POST https://slack.com/api/files.getUploadURLExternal \
             -H 'Authorization: Bearer ${{ secrets.SLACK_BOT_TOKEN }}' \
+            -H 'Content-Type: application/json' \
+            -d '{
+                  "channels": ["${{ secrets.SLACK_TEST_REGRESSIONAL_CHANNEL_ID }}"],
+                  "filetype": "zip",
+                  "filename": "test-results.zip"
+                }' | jq -r '.url')
+      
+          # Step 2: Upload the file to the provided URL
+          curl -X POST $UPLOAD_URL \
             -F file=@test-results.zip \
-            -F "initial_comment=Test results are available! :tada:\n\nHere is the [test report](https://github.com/jeremyyymrcs/Login-API-Automation/actions/runs/${{ github.run_id }})\n\nThe tests have completed. Check the results and logs.\n\nAlso, the zip file containing the results is attached below." \
-            -F channels=${{ secrets.SLACK_TEST_REGRESSIONAL_CHANNEL_ID }} \
-            -F "filename=test-results.zip" \
-            -F "filetype=zip"
+            -F "initial_comment=Test results are available! :tada:\n\nHere is the [test report](https://github.com/jeremyyymrcs/Login-API-Automation/actions/runs/${{ github.run_id }})\n\nThe tests have completed. Check the results and logs.\n\nAlso, the zip file containing the results is attached below."
+      
+          # Step 3: Complete the file upload (Slack will finalize the upload)
+          curl -X POST https://slack.com/api/files.completeUploadExternal \
+            -H 'Authorization: Bearer ${{ secrets.SLACK_BOT_TOKEN }}' \
+            -H 'Content-Type: application/json' \
+            -d '{
+                  "channels": ["${{ secrets.SLACK_TEST_REGRESSIONAL_CHANNEL_ID }}"],
+                  "file": "test-results.zip"
+                }'
 
 
 #
