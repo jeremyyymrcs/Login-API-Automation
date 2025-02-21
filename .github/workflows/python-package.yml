@@ -67,11 +67,15 @@ jobs:
 
       - name: Get Upload URL from Slack
         run: |
+          # Get the length (size) of the file
+          file_size=$(stat -c %s "test-results.zip")
+          
           response=$(curl -X POST \
             -H "Authorization: Bearer ${{ secrets.SLACK_BOT_TOKEN }}" \
             -H "Content-Type: application/json" \
-            --data '{"file_name":"test-results.zip","channels":["${{ secrets.SLACK_CHANNEL_ID }}"]}' \
+            --data "{\"filename\":\"test-results.zip\",\"channels\":[\"${{ secrets.SLACK_CHANNEL_ID }}\"],\"length\":$file_size}" \
             https://slack.com/api/files.getUploadURLExternal)
+          
           echo "Slack API Response: $response"
           UPLOAD_URL=$(echo $response | jq -r '.url')
           echo "Upload URL: $UPLOAD_URL"
