@@ -51,11 +51,16 @@ jobs:
           else
             LOG_CONTENT="No logs available."
           fi
-          
+      
+          # Escape special characters and limit the content size for Slack
+          ESCAPED_LOG_CONTENT=$(echo "$LOG_CONTENT" | jq -Rs .)
+          SHORTENED_LOG_CONTENT=$(echo "$ESCAPED_LOG_CONTENT" | head -c 4000)  # Limit to 4000 characters
+      
+          # Send the logs to Slack
           curl -X POST -H 'Content-type: application/json' \
-          --data "{
-            \"text\": \"Test Results for Login Feature:\n\`\`\`$LOG_CONTENT\`\`\`\"
-          }" ${{ secrets.SLACK_CHANNEL_REPORT_HOOK }}
+            --data "{
+              \"text\": \"Test Results for Login Feature:\n\${SHORTENED_LOG_CONTENT}\"
+            }" ${{ secrets.SLACK_CHANNEL_REPORT_HOOK }}
           
 
       - name: Test with API Automation
