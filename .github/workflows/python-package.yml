@@ -45,24 +45,10 @@ jobs:
       - name: Send logs to Slack
         if: success() || failure()
         run: |
-          # Sanitize and escape special characters in the result.log
-          sanitized_logs=$(cat tests/result.log | sed -e 's/\\/\\\\/g' -e 's/"/\\"/g' -e 's/\n/\\n/g' -e 's/\t/\\t/g')
-      
-          # Ensure backticks in logs are properly escaped
-          sanitized_logs=$(echo "$sanitized_logs" | sed 's/`/\\\`/g')
-      
-          # Format the Slack message
-          message="Test logs:\n\`\`\`$sanitized_logs\`\`\`"
-      
-          # Use printf to handle newlines and escape characters correctly
-          payload=$(printf "{\"text\":\"%s\"}" "$message")
-      
-          # Send the sanitized logs to Slack in a code block format
+          # Send the logs to Slack in a code block format
           curl -X POST -H 'Content-type: application/json' \
-            --data "$payload" \
+            --data "{\"text\":\"Test logs:\n\`\`\`$(cat tests/result.log | sed 's/`/\\`/g')\`\`\`\"}" \
             ${{ secrets.SLACK_CHANNEL_REPORT_HOOK }}
-
-
 
       - name: Test with API Automation
         run: |
