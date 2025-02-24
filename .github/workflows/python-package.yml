@@ -41,18 +41,18 @@ jobs:
           cd tests
           pytest test_login.py -s -q -x --dashboard --html=report.html --save-screenshot --maximize  2>&1 | tee result.log   
           
-
       - name: Sanitize and send logs to Slack
         if: success() || failure()
         run: |
-          # Sanitize the logs and escape special characters (e.g., backslashes, quotes)
-          sanitized_logs=$(cat tests/result.log | sed -e 's/\\/\\\\/g' -e 's/"/\\"/g' -e 's/\t/\\t/g')
+          # Read the result.log file and preserve the original formatting (including newlines)
+          sanitized_logs=$(cat tests/result.log)
       
-          # Prepare the payload to send, ensuring newlines are preserved and logs are properly escaped
-          payload=$(echo -e "{\"text\":\"Test logs:\n\`\`\`$(echo "$sanitized_logs" | sed 's/"/\\"/g')\`\`\`\"}")
+          # Prepare the payload by wrapping the logs in code block format (triple backticks)
+          payload=$(printf '{"text":"Test logs:\n\`\`\`%s\`\`\`"}' "$sanitized_logs")
       
           # Send the sanitized logs to Slack in a code block format
           curl -X POST -H 'Content-type: application/json' --data "$payload" ${{ secrets.SLACK_CHANNEL_REPORT_HOOK }}
+
 
 
 
