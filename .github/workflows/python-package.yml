@@ -45,8 +45,8 @@ jobs:
       - name: Send logs to Slack
         if: success() || failure()
         run: |
-          # Sanitize the result.log file to ensure valid JSON payload
-          sanitized_logs=$(cat tests/result.log | jq -Rs .)
+          # Sanitize and escape special characters in the result.log
+          sanitized_logs=$(cat tests/result.log | sed -e 's/\\/\\\\/g' -e 's/"/\\"/g' -e 's/\n/\\n/g' -e 's/\t/\\t/g')
           
           # Send the sanitized logs to Slack
           curl -X POST -H 'Content-type: application/json' \
