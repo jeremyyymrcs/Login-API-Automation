@@ -49,20 +49,20 @@ jobs:
           
           # Get the test result (Passed or Failed)
           test_result=$(cat tests/result.log)
-          
+      
           # Set the test result summary based on the result
           if [[ $test_result == "Test Result: 0" ]]; then
-            result_summary="*Test Results Summary: Passed*"
+            result_summary="*Test Result: Passed* ✅"
           else
-            result_summary="*Test Results Summary: Failed*"
+            result_summary="*Test Result: Failed* ❌"
           fi
-          
+      
           # Get the link to download the GitHub artifacts
           artifact_url="https://github.com/jeremyyymrcs/Login-API-Automation/actions/runs/${{ github.run_id }}"
-
-          # Send the logs to Slack with enhanced formatting
+      
+          # Send the logs, result summary, and artifact link to Slack with enhanced formatting
           curl -X POST -H 'Content-type: application/json' \
-          --data "{\"text\":\"*Details:*\\n\`\`\`$log_contents\`\`\`\\n---\\n> _$result_summary_\\nFor more information, visit: <$artifact_url|GitHub Artifacts>\"}" \
+          --data "{\"text\":\"*Logs:*\\n\`\`\`$log_contents\`\`\`\\n---\\n*Test Results Summary:*\\n\\n$result_summary\\n---\\nTo download the detailed report, visit: <$artifact_url|GitHub Artifacts>\"}" \
           ${{ secrets.SLACK_CHANNEL_REPORT_HOOK }}
 
       - name: Test with API Automation
