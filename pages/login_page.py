@@ -14,7 +14,7 @@ class LoginPage(BasePage):
     password = "//input[@id='password']"
     multifactor_auth_code = "//input[contains(@placeholder,'Enter the 6-digit MFA Code')]"
     sign_in_button = "//a[@id='log-in']"
-    invalid_password_warning = "//h6[contains(a.,'Invalid Password!')]"
+    invalid_password_warning = "//h6[contains(.,'Invalid Password!')]"
 
     def login_using_totp_code(self):
         """Login using username, password, and TOTP code"""
