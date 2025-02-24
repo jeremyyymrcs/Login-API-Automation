@@ -47,8 +47,9 @@ jobs:
         run: |
           # Send the result.log contents to Slack, properly escaped
           curl -X POST -H 'Content-type: application/json' \
-          --data "{\"text\":\"Test logs:\n\`\`\`$(cat tests/result.log | sed 's/"/\\"/g' | sed 's/\n/\\n/g')\`\`\`\"}" \
+          --data "{\"text\":\"Test logs:\n$(cat tests/result.log | sed 's/"/\\"/g' | sed 's/\n/\\n/g')\"}" \
           ${{ secrets.SLACK_CHANNEL_REPORT_HOOK }}
+
 
 
 
