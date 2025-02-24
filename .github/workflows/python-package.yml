@@ -41,17 +41,19 @@ jobs:
           cd tests
           pytest test_login.py -s -q -x --dashboard --html=report.html --save-screenshot --maximize  2>&1 | tee result.log   
 
+      - name: Test with Login Feature
+        run: |
+          cd tests
+          pytest test_login.py -s -q -x --dashboard --html=report.html --save-screenshot --maximize 2>&1 | tee result.log
+
       - name: Send logs to Slack
         if: success() || failure()
         run: |
           # Get the logs and properly escape special characters
           log_contents=$(cat tests/result.log | sed 's/"/\\"/g' | sed ':a;N;$!ba;s/\n/\\n/g')
           
-          # Get the test result (Passed or Failed)
-          test_result=$(cat tests/result.log)
-          
-          # Set the test result summary based on the result
-          if [[ $test_result == "Test Result: 0" ]]; then
+          # Check for test result (look for "PASSED" or "FAILED")
+          if grep -q "PASSED" tests/result.log; then
             result_summary="*Test Results Summary:* Passed ✅"
           else
             result_summary="*Test Results Summary:* Failed ❌"
