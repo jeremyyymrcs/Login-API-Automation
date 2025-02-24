@@ -45,12 +45,22 @@ jobs:
       - name: Send logs to Slack
         if: success() || failure()
         run: |
-          # Sanitize the logs and ensure special characters are properly escaped for Slack
+          # Sanitize the logs and escape necessary characters (including backticks)
           sanitized_logs=$(cat tests/result.log | sed -e 's/\\/\\\\/g' -e 's/"/\\"/g' -e 's/\n/\\n/g' -e 's/\t/\\t/g' -e 's/`/\\`/g')
       
-          # Prepare Slack message with code block formatting
+          # Prepare the Slack message with code block formatting
           slack_message="{
-            \"text\": \"*Test logs:*\n\`\`\`$sanitized_logs\`\`\`\"
+            \"text\": \"*Test logs:*\",
+            \"mrkdwn\": true,
+            \"blocks\": [
+              {
+                \"type\": \"section\",
+                \"text\": {
+                  \"type\": \"mrkdwn\",
+                  \"text\": \"*Test logs:*\n\`\`\`$sanitized_logs\`\`\`\"
+                }
+              }
+            ]
           }"
           
           # Send the sanitized logs to Slack
