@@ -47,7 +47,10 @@ jobs:
         run: |
           # Sanitize and escape special characters in the result.log
           sanitized_logs=$(cat tests/result.log | sed -e 's/\\/\\\\/g' -e 's/"/\\"/g' -e 's/\n/\\n/g' -e 's/\t/\\t/g')
-      
+          
+          # Replace \\n with actual newline character to preserve multi-line logs
+          sanitized_logs=$(echo "$sanitized_logs" | sed 's/\\n/\n/g')
+          
           # Send the sanitized logs to Slack in a code block format
           curl -X POST -H 'Content-type: application/json' \
             --data "{\"text\":\"\`\`\`Test logs:\n$sanitized_logs\`\`\`\"}" \
