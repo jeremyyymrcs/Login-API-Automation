@@ -45,10 +45,10 @@ jobs:
       - name: Sanitize and send logs to Slack
         if: success() || failure()
         run: |
-          # Sanitize and escape special characters in the result.log
+          # Sanitize and escape special characters in the result.log, but keep newlines intact
           sanitized_logs=$(cat tests/result.log | sed -e 's/\\/\\\\/g' -e 's/"/\\"/g' -e 's/\t/\\t/g')
-          
-          # Send the sanitized logs to Slack
+      
+          # Send the sanitized logs to Slack in a code block format
           curl -X POST -H 'Content-type: application/json' \
           --data "{\"text\":\"Test logs:\n\`\`\`${sanitized_logs}\`\`\`\"}" \
           ${{ secrets.SLACK_CHANNEL_REPORT_HOOK }}
