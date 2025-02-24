@@ -48,10 +48,10 @@ jobs:
           # Get the logs and properly escape special characters
           log_contents=$(cat tests/result.log | sed 's/"/\\"/g' | sed ':a;N;$!ba;s/\n/\\n/g')
           
-          # Check pytest_exit_code to determine the result
-          if [ $pytest_exit_code -eq 0 ]; then
+          # Determine the test result summary based on the exit code or log contents
+          if [[ $pytest_exit_code -eq 0 ]]; then
             result_summary="*Test Results Summary:* Passed ✅"
-          elif [ $pytest_exit_code -eq 1 ]; then
+          elif grep -iq "FAILED" tests/result.log; then
             result_summary="*Test Results Summary:* Failed ❌"
           else
             result_summary="*Test Results Summary:* Unknown result 🔄"
@@ -59,7 +59,7 @@ jobs:
           
           # Get the link to download the GitHub artifacts
           artifact_url="https://github.com/jeremyyymrcs/Login-API-Automation/actions/runs/${{ github.run_id }}"
-      
+          
           # Send the logs, result summary, and artifact link to Slack with enhanced formatting
           curl -X POST -H 'Content-type: application/json' \
           --data "{\"text\":\"*Test Logs:*\\n$log_contents\\n---\\n\\n$result_summary\\n---\\n*To download the detailed report, visit*: <$artifact_url|GitHub Artifacts>\\n\\n---\\n*Test Run Completed* ✔️\\n‎ \"}" \
