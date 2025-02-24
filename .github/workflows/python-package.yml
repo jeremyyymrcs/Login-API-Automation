@@ -39,9 +39,8 @@ jobs:
       - name: Test with Login Feature
         run: |
           cd tests
-          pytest test_login.py -s -q -x --dashboard --html=report.html --save-screenshot --maximize  2>&1 | tee result.log   
+          pytest test_login.py -s -q -x --dashboard --html=report.html --save-screenshot --maximize 2>&1 | tee result.log   
           pytest_exit_code=${PIPESTATUS[0]}  # Capture the exit code of pytest
-
 
       - name: Send logs to Slack
         if: success() || failure()
@@ -49,11 +48,13 @@ jobs:
           # Get the logs and properly escape special characters
           log_contents=$(cat tests/result.log | sed 's/"/\\"/g' | sed ':a;N;$!ba;s/\n/\\n/g')
           
-          # Check for test result (look for "PASSED" or "FAILED")
-          if [[ $pytest_exit_code -eq 0 ]]; then
+          # Extract the test result summary from the pytest log file
+          if grep -q "PASSED" tests/result.log; then
             result_summary="*Test Results Summary:* Passed ✅"
-          else
+          elif grep -q "FAILED" tests/result.log; then
             result_summary="*Test Results Summary:* Failed ❌"
+          else
+            result_summary="*Test Results Summary:* Unknown result 🔄"
           fi
           
           # Get the link to download the GitHub artifacts
