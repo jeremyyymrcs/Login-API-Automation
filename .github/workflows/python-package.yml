@@ -48,8 +48,10 @@ jobs:
           # Get the logs and properly escape special characters
           log_contents=$(cat tests/result.log | sed 's/"/\\"/g' | sed ':a;N;$!ba;s/\n/\\n/g')
           
+          test_results = log_contents=$(tail -n 20 tests/result.log | sed 's/"/\\"/g' | sed ':a;N;$!ba;s/\n/\\n/g')
+          
           # Check if "failed" or "error" keywords are present in the logs to determine test result
-          if [[ "$log_contents" == *"failed"* ]] || [[ "$log_contents" == *"error"* ]]; then
+          if [[ "$test_results" == *"failed"* ]] || [[ "$test_results" == *"error"* ]]; then
             result_summary="*Test Results Summary:* Failed ❌"
           else
             result_summary="*Test Results Summary:* Passed ✅"
