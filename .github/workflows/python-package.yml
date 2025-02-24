@@ -52,9 +52,9 @@ jobs:
           
           # Set the test result summary based on the result
           if [[ $test_result == "Test Result: 0" ]]; then
-            result_summary="Test Results Summary: Passed ✅"
+            result_summary="*Test Results Summary:* Passed ✅"
           else
-            result_summary="Test Results Summary: Failed ❌"
+            result_summary="*Test Results Summary:* Failed ❌"
           fi
           
           # Get the link to download the GitHub artifacts
@@ -62,7 +62,7 @@ jobs:
           
           # Send the logs, result summary, and artifact link to Slack with enhanced formatting
           curl -X POST -H 'Content-type: application/json' \
-          --data "{\"text\":\"*Logs:*\\n\`\`\`$log_contents\`\`\`\\n---\\n\\n$result_summary\\n---\\nTo download the detailed report, visit: <$artifact_url|GitHub Artifacts>\\n\"}" \
+          --data "{\"text\":\"*Logs:*\\n$log_contents\\n---\\n\\n$result_summary\\n---\\n*To download the detailed report, visit*: <$artifact_url|GitHub Artifacts>\\n\\n\"}" \
           ${{ secrets.SLACK_CHANNEL_REPORT_HOOK }}
 
       - name: Test with API Automation
