@@ -49,7 +49,7 @@ jobs:
           log_contents=$(cat tests/result.log | sed 's/"/\\"/g' | sed ':a;N;$!ba;s/\n/\\n/g')
       
           # Get the test result (Passed or Failed)
-          test_result=$(cat tests/result_status.log)
+          test_result=$(cat tests/result.log)
       
           # Set the test result summary based on the result
           if [[ $test_result == "Test Result: 0" ]]; then
