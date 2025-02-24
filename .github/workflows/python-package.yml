@@ -41,21 +41,19 @@ jobs:
           cd tests
           pytest test_login.py -s -q -x --dashboard --html=report.html --save-screenshot --maximize  2>&1 | tee result.log   
           
+
       - name: Send logs to Slack
         if: success() || failure()
         run: |
           # Sanitize and escape special characters in the result.log
           sanitized_logs=$(cat tests/result.log | sed -e 's/\\/\\\\/g' -e 's/"/\\"/g' -e 's/\n/\\n/g' -e 's/\t/\\t/g')
       
-          # Replace the escaped newlines (\\n) with actual newlines so Slack renders it properly
-          sanitized_logs=$(echo "$sanitized_logs" | sed 's/\\n/\n/g')
-      
-          # Properly encode the message to handle Slack's JSON requirements
-          slack_message="{\"text\":\"Test logs:\n\`\`\`$(echo "$sanitized_logs" | sed 's/"/\\"/g')\`\`\`\"}"
+          # Escape backticks and other special characters for JSON compatibility
+          sanitized_logs=$(echo "$sanitized_logs" | sed 's/`/\\`/g')
       
           # Send the sanitized logs to Slack in a code block format
           curl -X POST -H 'Content-type: application/json' \
-            --data "$slack_message" \
+            --data "{\"text\":\"Test logs:\n\`\`\`$sanitized_logs\`\`\`\"}" \
             ${{ secrets.SLACK_CHANNEL_REPORT_HOOK }}
 
 
