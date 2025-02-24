@@ -48,12 +48,9 @@ jobs:
           # Sanitize the logs
           sanitized_logs=$(cat tests/result.log | sed -e 's/\\/\\\\/g' -e 's/"/\\"/g' -e 's/\n/\\n/g' -e 's/\t/\\t/g')
           
-          # Escape the sanitized logs for proper JSON formatting
-          sanitized_logs_escaped=$(echo "$sanitized_logs" | jq -Rs .)
-          
           # Send the sanitized logs to Slack
           curl -X POST -H 'Content-type: application/json' \
-          --data "{\"text\":\"Test logs:\n\`\`\`$sanitized_logs_escaped\`\`\`\"}" \
+          --data "{\"text\":\"Test logs:\n\`\`\`$sanitized_logs\`\`\`\"}" \
           ${{ secrets.SLACK_CHANNEL_REPORT_HOOK }}
 
 
