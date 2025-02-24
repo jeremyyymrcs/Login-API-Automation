@@ -48,13 +48,11 @@ jobs:
           # Sanitize and escape special characters in the result.log
           sanitized_logs=$(cat tests/result.log | sed -e 's/\\/\\\\/g' -e 's/"/\\"/g' -e 's/\n/\\n/g' -e 's/\t/\\t/g')
           
-          # Wrap sanitized logs in triple backticks for Slack code block format
-          sanitized_logs_with_code_block="```\n$sanitized_logs\n```"
-          
           # Send the sanitized logs to Slack in a code block format
           curl -X POST -H 'Content-type: application/json' \
-            --data "{\"text\":\"Test logs:\n$sanitized_logs_with_code_block\"}" \
+            --data "{\"text\":\"\`\`\`Test logs:\n\$sanitized_logs\`\`\`\"}" \
             ${{ secrets.SLACK_CHANNEL_REPORT_HOOK }}
+
 
 
 
