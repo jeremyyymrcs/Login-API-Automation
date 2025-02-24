@@ -48,10 +48,10 @@ jobs:
           # Get the logs and properly escape special characters
           log_contents=$(cat tests/result.log | sed 's/"/\\"/g' | sed ':a;N;$!ba;s/\n/\\n/g')
           
-          # Extract the test result summary from the pytest log file
-          if grep -q "PASSED" tests/result.log; then
+          # Check for "PASSED" in the result.log file (case insensitive) and if not, check for "FAILED"
+          if grep -iq "PASSED" tests/result.log; then
             result_summary="*Test Results Summary:* Passed ✅"
-          elif grep -q "FAILED" tests/result.log; then
+          elif grep -iq "FAILED" tests/result.log; then
             result_summary="*Test Results Summary:* Failed ❌"
           else
             result_summary="*Test Results Summary:* Unknown result 🔄"
