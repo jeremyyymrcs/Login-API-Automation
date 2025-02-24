@@ -53,7 +53,7 @@ jobs:
           log_contents=$(cat tests/result.log | sed 's/"/\\"/g' | sed ':a;N;$!ba;s/\n/\\n/g')
           
           # Check for test result (look for "PASSED" or "FAILED")
-          if grep -q "PASSED" tests/result.log; then
+          if grep -q "passed" tests/result.log; then
             result_summary="*Test Results Summary:* Passed ✅"
           else
             result_summary="*Test Results Summary:* Failed ❌"
