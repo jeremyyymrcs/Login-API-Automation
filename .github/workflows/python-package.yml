@@ -48,11 +48,11 @@ jobs:
           # Get the logs and properly escape special characters
           log_contents=$(cat tests/result.log | sed 's/"/\\"/g' | sed ':a;N;$!ba;s/\n/\\n/g')
           
-          # Determine the test result summary based on the exit code or log contents
-          if [[ $pytest_exit_code -eq 0 && ! $(grep -i "failed" tests/result.log) ]]; then
-            result_summary="*Test Results Summary:* Passed ✅"
-          else
+          # Check if "failed" or "error" keywords are present in the logs to determine test result
+          if [[ "$log_contents" == *"failed"* ]] || [[ "$log_contents" == *"error"* ]]; then
             result_summary="*Test Results Summary:* Failed ❌"
+          else
+            result_summary="*Test Results Summary:* Passed ✅"
           fi
           
           # Get the link to download the GitHub artifacts
