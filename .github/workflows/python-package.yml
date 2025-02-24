@@ -49,7 +49,7 @@ jobs:
           sanitized_logs=$(cat tests/result.log | sed -e 's/\\/\\\\/g' -e 's/"/\\"/g' -e 's/\n/\\n/g' -e 's/\t/\\t/g' -e 's/`/\\`/g')
       
           # Prepare Slack message with code block formatting
-          slack_message="*Test logs:*\n\`\`\`$result.log\`\`\`"
+          slack_message="*Test logs:*\n\`\`\`$cat tests/result.log\`\`\`"
       
           # Send the sanitized logs to Slack
           curl -X POST -H 'Content-type: application/json' \
