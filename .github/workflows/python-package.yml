@@ -48,10 +48,40 @@ jobs:
           # Sanitize the logs
           sanitized_logs=$(cat tests/result.log | sed -e 's/\\/\\\\/g' -e 's/"/\\"/g' -e 's/\n/\\n/g' -e 's/\t/\\t/g')
       
-          # Send the sanitized logs to Slack in a code block format
+          # Format the message with blocks for better structure
+          slack_message=$(cat <<EOF
+          {
+            "blocks": [
+              {
+                "type": "section",
+                "text": {
+                  "type": "mrkdwn",
+                  "text": "*Test Results:*"
+                }
+              },
+              {
+                "type": "section",
+                "fields": [
+                  {
+                    "type": "mrkdwn",
+                    "text": "*Test Logs*"
+                  },
+                  {
+                    "type": "mrkdwn",
+                    "text": "\`\`\`$sanitized_logs\`\`\`"
+                  }
+                ]
+              }
+            ]
+          }
+          EOF
+          )
+      
+          # Send the message to Slack
           curl -X POST -H 'Content-type: application/json' \
-            --data "{\"text\":\"\`\`\`Test logs:\n$sanitized_logs\`\`\`\"}" \
+            --data "$slack_message" \
             ${{ secrets.SLACK_CHANNEL_REPORT_HOOK }}
+
 
 
 
