@@ -50,8 +50,9 @@ jobs:
           
           # Send the sanitized logs to Slack
           curl -X POST -H 'Content-type: application/json' \
-          --data "{\"text\":\"Test logs:\n $sanitized_logs"}" \
+          --data "{\"text\":\"Test logs:\n$sanitized_logs\"}" \
           ${{ secrets.SLACK_CHANNEL_REPORT_HOOK }}
+
 
 
 
