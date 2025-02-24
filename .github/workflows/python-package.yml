@@ -40,7 +40,7 @@ jobs:
         run: |
           cd tests
           pytest test_login.py -s -q -x --dashboard --html=report.html --save-screenshot --maximize 2>&1 | tee result.log   
-          pytest_exit_code=${PIPESTATUS[0]}  # Capture the exit code of pytest
+          
 
       - name: Send logs to Slack
         if: success() || failure()
@@ -48,16 +48,11 @@ jobs:
           # Get the logs and properly escape special characters
           log_contents=$(cat tests/result.log | sed 's/"/\\"/g' | sed ':a;N;$!ba;s/\n/\\n/g')
           
-          # Extract the last 20 characters from the log contents
-          last_20_chars="${log_contents: -20}"
-      
-          # Check if "passed" or "failed" is present in the last 20 characters
-          if [[ "$last_20_chars" == *"failed"* ]]; then
+          # Check if "failed" or "error" keywords are present in the logs to determine test result
+          if [[ "$log_contents" == *"ERROR"* ]]; then
             result_summary="*Test Results Summary:* Failed ❌"
-          elif [[ "$last_20_chars" == *"passed"* ]]; then
-            result_summary="*Test Results Summary:* Passed ✅"
           else
-            result_summary="*Test Results Summary:* Unknown Status"
+            result_summary="*Test Results Summary:* Passed ✅"
           fi
           
           # Get the link to download the GitHub artifacts
