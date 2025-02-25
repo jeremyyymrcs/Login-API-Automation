@@ -41,7 +41,6 @@ jobs:
           cd tests
           pytest test_login.py -s -q -x --dashboard --html=report.html --save-screenshot --maximize 2>&1 | tee result.log   
           
-
       - name: Send logs to Slack
         if: success() || failure()
         run: |
@@ -57,11 +56,64 @@ jobs:
           
           # Get the link to download the GitHub artifacts
           artifact_url="https://github.com/jeremyyymrcs/Login-API-Automation/actions/runs/${{ github.run_id }}"
-          
-          # Send the logs, result summary, and artifact link to Slack with enhanced formatting
-          curl -X POST -H 'Content-type: application/json' \
-          --data "{\"text\":\"*Test Logs:*\\n$log_contents\\n---\\n\\n$result_summary\\n---\\n*To download the detailed report, visit*: <$artifact_url|GitHub Artifacts>\\n\\n---\\n*Test Run Completed* ✔️\\n‎ \"}" \
-          ${{ secrets.SLACK_CHANNEL_REPORT_HOOK }}
+
+          # Slack message payload with expanded details and links for viewing logs
+          payload=$(cat <<EOF
+          {
+            "blocks": [
+              {
+                "type": "section",
+                "text": {
+                  "type": "mrkdwn",
+                  "text": "*Test Logs:*\n*Details of the logs are provided below. Expand for more information.*"
+                }
+              },
+              {
+                "type": "section",
+                "block_id": "log_section",
+                "fields": [
+                  {
+                    "type": "mrkdwn",
+                    "text": "*Result Summary:*\n$result_summary"
+                  },
+                  {
+                    "type": "mrkdwn",
+                    "text": "*First few lines of logs:*\n$(echo $log_contents | cut -c 1-500)..."  # First 500 chars of logs
+                  }
+                ]
+              },
+              {
+                "type": "actions",
+                "elements": [
+                  {
+                    "type": "button",
+                    "text": {
+                      "type": "plain_text",
+                      "text": "Expand for full logs"
+                    },
+                    "url": "$artifact_url",
+                    "action_id": "expand_logs"
+                  }
+                ]
+              },
+              {
+                "type": "context",
+                "elements": [
+                  {
+                    "type": "mrkdwn",
+                    "text": "*To download the detailed report, visit the following link:* <$artifact_url|GitHub Artifacts>"
+                  }
+                ]
+              }
+            ]
+          }
+          EOF
+          )
+
+      # Send the logs, result summary, and artifact link to Slack with enhanced formatting
+      curl -X POST -H 'Content-type: application/json' \
+      --data "$payload" \
+      ${{ secrets.SLACK_CHANNEL_REPORT_HOOK }}
 
       - name: Test with API Automation
         run: |
