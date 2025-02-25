@@ -42,40 +42,40 @@ jobs:
           pytest test_login.py -s -q -x --dashboard --html=report.html --save-screenshot --maximize 2>&1 | tee result.log   
           
 
-- name: Send logs to Slack
-  if: success() || failure()
-  run: |
-    # Get the logs and properly escape special characters
-    log_contents=$(cat tests/result.log | sed 's/"/\\"/g' | sed ':a;N;$!ba;s/\n/\\n/g')
-    
-    # Check if "failed" or "error" keywords are present in the logs to determine test result
-    if [[ "$log_contents" == *"ERROR"* ]]; then
-      result_summary="*Test Results Summary:* Failed ❌"
-    else
-      result_summary="*Test Results Summary:* Passed ✅"
-    fi
-    
-    # Get the link to download the GitHub artifacts
-    artifact_url="https://github.com/jeremyyymrcs/Login-API-Automation/actions/runs/${{ github.run_id }}"
-    
-    # Build Slack message payload with expandable logs
-    slack_message="{
-      \"blocks\": [
-        {
-          \"type\": \"section\",
-          \"block_id\": \"test_summary\",
-          \"text\": {
-            \"type\": \"mrkdwn\",
-            \"text\": \"$result_summary\\n---\\n*Test Logs:*\\n<details><summary>Click to Expand</summary>$log_contents</details>\\n---\\n*To download the detailed report, visit*: <$artifact_url|GitHub Artifacts>\\n\\n---\\n*Test Run Completed* ✔️\\n‎\"
-          }
-        }
-      ]
-    }"
-    
-    # Send the logs, result summary, and artifact link to Slack with the message formatted
-    curl -X POST -H 'Content-type: application/json' \
-    --data "$slack_message" \
-    ${{ secrets.SLACK_CHANNEL_REPORT_HOOK }}
+      - name: Send logs to Slack
+        if: success() || failure()
+        run: |
+          # Get the logs and properly escape special characters
+          log_contents=$(cat tests/result.log | sed 's/"/\\"/g' | sed ':a;N;$!ba;s/\n/\\n/g')
+          
+          # Check if "failed" or "error" keywords are present in the logs to determine test result
+          if [[ "$log_contents" == *"ERROR"* ]]; then
+            result_summary="*Test Results Summary:* Failed ❌"
+          else
+            result_summary="*Test Results Summary:* Passed ✅"
+          fi
+          
+          # Get the link to download the GitHub artifacts
+          artifact_url="https://github.com/jeremyyymrcs/Login-API-Automation/actions/runs/${{ github.run_id }}"
+          
+          # Build Slack message payload with expandable logs
+          slack_message="{
+            \"blocks\": [
+              {
+                \"type\": \"section\",
+                \"block_id\": \"test_summary\",
+                \"text\": {
+                  \"type\": \"mrkdwn\",
+                  \"text\": \"$result_summary\\n---\\n*Test Logs:*\\n<details><summary>Click to Expand</summary>$log_contents</details>\\n---\\n*To download the detailed report, visit*: <$artifact_url|GitHub Artifacts>\\n\\n---\\n*Test Run Completed* ✔️\\n‎\"
+                }
+              }
+            ]
+          }"
+          
+          # Send the logs, result summary, and artifact link to Slack with the message formatted
+          curl -X POST -H 'Content-type: application/json' \
+          --data "$slack_message" \
+          ${{ secrets.SLACK_CHANNEL_REPORT_HOOK }}
 
       - name: Test with API Automation
         run: |
