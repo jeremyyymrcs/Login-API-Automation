@@ -40,82 +40,55 @@ jobs:
         run: |
           cd tests
           pytest test_login.py -s -q -x --dashboard --html=report.html --save-screenshot --maximize 2>&1 | tee result.log   
-
-      - name: Test with Login Feature
-        run: |
-          cd tests
-          pytest test_login.py -s -q -x --dashboard --html=report.html --save-screenshot --maximize 2>&1 | tee result.log   
+          
 
       - name: Send logs to Slack
         if: success() || failure()
         run: |
           # Get the logs and properly escape special characters
           log_contents=$(cat tests/result.log | sed 's/"/\\"/g' | sed ':a;N;$!ba;s/\n/\\n/g')
-          
+
           # Check if "failed" or "error" keywords are present in the logs to determine test result
           if [[ "$log_contents" == *"ERROR"* ]]; then
             result_summary="*Test Results Summary:* Failed ❌"
           else
             result_summary="*Test Results Summary:* Passed ✅"
           fi
-          
+
           # Get the link to download the GitHub artifacts
           artifact_url="https://github.com/jeremyyymrcs/Login-API-Automation/actions/runs/${{ github.run_id }}"
 
-          # Prepare the Slack message with properly formatted blocks
-          payload=$(cat <<EOF
-          {
-            "blocks": [
+          # Send the logs, result summary, and artifact link to Slack with enhanced formatting
+          curl -X POST -H 'Content-type: application/json' \
+          --data "{
+            \"blocks\": [
               {
-                "type": "section",
-                "text": {
-                  "type": "mrkdwn",
-                  "text": "*Test Logs:*\nThe logs for the test run are provided below. You can expand for more details."
+                \"type\": \"section\",
+                \"text\": {
+                  \"type\": \"mrkdwn\",
+                  \"text\": \"$result_summary\\n---\\n*To download the detailed report, visit*: <$artifact_url|GitHub Artifacts>\\n\\n---\\n*Test Run Completed* ✔️\\n‎\"
                 }
               },
               {
-                "type": "section",
-                "fields": [
-                  {
-                    "type": "mrkdwn",
-                    "text": "*Result Summary:*\n$result_summary"
+                \"type\": \"section\",
+                \"block_id\": \"log_section\",
+                \"text\": {
+                  \"type\": \"mrkdwn\",
+                  \"text\": \"*Test Logs (Click to expand):*\"
+                },
+                \"accessory\": {
+                  \"type\": \"button\",
+                  \"text\": {
+                    \"type\": \"plain_text\",
+                    \"text\": \"Expand Logs\"
                   },
-                  {
-                    "type": "mrkdwn",
-                    "text": "*First few lines of logs:*\n$(echo "$log_contents" | head -n 10)"
-                  }
-                ]
-              },
-              {
-                "type": "actions",
-                "elements": [
-                  {
-                    "type": "button",
-                    "text": {
-                      "type": "plain_text",
-                      "text": "Expand for full logs"
-                    },
-                    "url": "$artifact_url"
-                  }
-                ]
-              },
-              {
-                "type": "context",
-                "elements": [
-                  {
-                    "type": "mrkdwn",
-                    "text": "*To download the detailed report, visit the following link:* <$artifact_url|GitHub Artifacts>"
-                  }
-                ]
+                  \"action_id\": \"expand_logs\",
+                  \"url\": \"#\",
+                  \"value\": \"$log_contents\"
+                }
               }
             ]
-          }
-          EOF
-          )
-          
-          # Send the logs, result summary, and artifact link to Slack with enhanced formatting
-          curl -X POST -H 'Content-type: application/json' \
-          --data "$payload" \
+          }" \
           ${{ secrets.SLACK_CHANNEL_REPORT_HOOK }}
 
 
