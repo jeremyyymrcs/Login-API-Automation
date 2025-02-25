@@ -47,17 +47,21 @@ jobs:
         run: |
           # Get the logs and properly escape special characters
           log_contents=$(cat tests/result.log | sed 's/"/\\"/g' | sed ':a;N;$!ba;s/\n/\\n/g')
-
+      
           # Check if "failed" or "error" keywords are present in the logs to determine test result
           if [[ "$log_contents" == *"ERROR"* ]]; then
             result_summary="*Test Results Summary:* Failed ❌"
           else
             result_summary="*Test Results Summary:* Passed ✅"
           fi
-
+      
+          # Truncate logs to only show a snippet in the message
+          truncated_logs=$(echo "$log_contents" | head -n 10) # Show only first 10 lines
+          full_logs_url="https://example.com/logs?run_id=${{ github.run_id }}"  # This will link to full logs
+      
           # Get the link to download the GitHub artifacts
           artifact_url="https://github.com/jeremyyymrcs/Login-API-Automation/actions/runs/${{ github.run_id }}"
-
+      
           # Send the logs, result summary, and artifact link to Slack with enhanced formatting
           curl -X POST -H 'Content-type: application/json' \
           --data "{
@@ -73,7 +77,7 @@ jobs:
                 \"type\": \"section\",
                 \"text\": {
                   \"type\": \"mrkdwn\",
-                  \"text\": \"*Test Logs (Click below to expand):*\"
+                  \"text\": \"*Test Logs (click below to expand):*\n$truncated_logs... (click to expand)\"
                 },
                 \"accessory\": {
                   \"type\": \"button\",
@@ -82,12 +86,13 @@ jobs:
                     \"text\": \"Expand Logs\"
                   },
                   \"action_id\": \"expand_logs\",
-                  \"url\": \"https://example.com/logs?run_id=${{ github.run_id }}\"
+                  \"url\": \"$full_logs_url\"
                 }
               }
             ]
           }" \
           ${{ secrets.SLACK_CHANNEL_REPORT_HOOK }}
+
 
 
 
