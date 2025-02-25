@@ -41,6 +41,11 @@ jobs:
           cd tests
           pytest test_login.py -s -q -x --dashboard --html=report.html --save-screenshot --maximize 2>&1 | tee result.log   
 
+      - name: Test with Login Feature
+        run: |
+          cd tests
+          pytest test_login.py -s -q -x --dashboard --html=report.html --save-screenshot --maximize 2>&1 | tee result.log   
+
       - name: Send logs to Slack
         if: success() || failure()
         run: |
@@ -57,7 +62,7 @@ jobs:
           # Get the link to download the GitHub artifacts
           artifact_url="https://github.com/jeremyyymrcs/Login-API-Automation/actions/runs/${{ github.run_id }}"
 
-          # Slack message payload with expanded details and links for viewing logs
+          # Prepare the Slack message with properly formatted blocks
           payload=$(cat <<EOF
           {
             "blocks": [
@@ -65,12 +70,11 @@ jobs:
                 "type": "section",
                 "text": {
                   "type": "mrkdwn",
-                  "text": "*Test Logs:*\n*Details of the logs are provided below. Expand for more information.*"
+                  "text": "*Test Logs:*\nThe logs for the test run are provided below. You can expand for more details."
                 }
               },
               {
                 "type": "section",
-                "block_id": "log_section",
                 "fields": [
                   {
                     "type": "mrkdwn",
@@ -91,8 +95,7 @@ jobs:
                       "type": "plain_text",
                       "text": "Expand for full logs"
                     },
-                    "url": "$artifact_url",
-                    "action_id": "expand_logs"
+                    "url": "$artifact_url"
                   }
                 ]
               },
@@ -114,6 +117,7 @@ jobs:
           curl -X POST -H 'Content-type: application/json' \
           --data "$payload" \
           ${{ secrets.SLACK_CHANNEL_REPORT_HOOK }}
+
 
       - name: Test with API Automation
         run: |
