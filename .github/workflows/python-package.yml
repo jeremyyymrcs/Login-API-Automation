@@ -41,7 +41,6 @@ jobs:
           cd tests
           pytest test_login.py -s -q -x --dashboard --html=report.html --save-screenshot --maximize 2>&1 | tee result.log   
           
-
       - name: Send logs to Slack
         if: success() || failure()
         run: |
@@ -58,21 +57,36 @@ jobs:
           # Get the link to download the GitHub artifacts
           artifact_url="https://github.com/jeremyyymrcs/Login-API-Automation/actions/runs/${{ github.run_id }}"
           
-          # Build Slack message payload with expandable logs
+          # Build Slack message payload with a button for downloading logs
           slack_message="{
             \"blocks\": [
               {
                 \"type\": \"section\",
-                \"block_id\": \"test_summary\",
                 \"text\": {
                   \"type\": \"mrkdwn\",
-                  \"text\": \"$result_summary\\n---\\n*Test Logs:*\\n<details><summary>Click to Expand</summary>$log_contents</details>\\n---\\n*To download the detailed report, visit*: <$artifact_url|GitHub Artifacts>\\n\\n---\\n*Test Run Completed* ✔️\\n‎\"
+                  \"text\": \"$result_summary\\n---\\n*Test Logs:* (see below)\\n---\\n*Test Run Completed* ✔️\\n‎\"
+                }
+              },
+              {
+                \"type\": \"section\",
+                \"block_id\": \"log_section\",
+                \"text\": {
+                  \"type\": \"mrkdwn\",
+                  \"text\": \"*Click the button below to view detailed logs*\"
+                },
+                \"accessory\": {
+                  \"type\": \"button\",
+                  \"text\": {
+                    \"type\": \"plain_text\",
+                    \"text\": \"View Logs\"
+                  },
+                  \"url\": \"$artifact_url\"
                 }
               }
             ]
           }"
           
-          # Send the logs, result summary, and artifact link to Slack with the message formatted
+          # Send the logs, result summary, and artifact link to Slack
           curl -X POST -H 'Content-type: application/json' \
           --data "$slack_message" \
           ${{ secrets.SLACK_CHANNEL_REPORT_HOOK }}
