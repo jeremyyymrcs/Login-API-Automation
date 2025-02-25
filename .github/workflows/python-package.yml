@@ -46,24 +46,21 @@ jobs:
         if: success() || failure()
         run: |
           # Get the logs and properly escape special characters
-          log_contents=$(cat tests/result.log | sed 's/"/\\"/g' | sed ':a;N;$!ba;s/\n/\\n/g')
-      
+          log_contents=$(cat tests/result.log)
+
+          # Truncate the logs to keep it manageable in the Slack message (show first 1000 characters)
+          truncated_logs=$(echo "$log_contents" | head -c 1000)
+
           # Check if "failed" or "error" keywords are present in the logs to determine test result
           if [[ "$log_contents" == *"ERROR"* ]]; then
             result_summary="*Test Results Summary:* Failed ❌"
           else
             result_summary="*Test Results Summary:* Passed ✅"
           fi
-      
-          # Truncate the logs for initial display (adjust number of lines to show initially)
-          truncated_logs=$(echo "$log_contents" | head -n 10)  # Adjust number of lines to show initially
-      
+
           # Get the link to download the GitHub artifacts
           artifact_url="https://github.com/jeremyyymrcs/Login-API-Automation/actions/runs/${{ github.run_id }}"
-      
-          # Get the link for full log view
-          log_url="https://example.com/logs?run_id=${{ github.run_id }}"
-      
+
           # Send the logs, result summary, and artifact link to Slack with enhanced formatting
           curl -X POST -H 'Content-type: application/json' \
           --data "{
@@ -79,12 +76,21 @@ jobs:
                 \"type\": \"section\",
                 \"text\": {
                   \"type\": \"mrkdwn\",
-                  \"text\": \"*Test Logs (click below to expand):*\n$truncated_logs... (more logs)\n\n*Click here to view full logs:* <$log_url|View Full Logs>\"
+                  \"text\": \"*Test Logs (click below to view more):*\n$truncated_logs... (logs truncated)\"
+                }
+              },
+              {
+                \"type\": \"section\",
+                \"text\": {
+                  \"type\": \"mrkdwn\",
+                  \"text\": \"*Click below to view the full logs:* \n<$artifact_url|Full Logs here>\"
                 }
               }
             ]
           }" \
           ${{ secrets.SLACK_CHANNEL_REPORT_HOOK }}
+
+
 
 
 
