@@ -76,15 +76,21 @@ jobs:
                 \"type\": \"section\",
                 \"text\": {
                   \"type\": \"mrkdwn\",
-                  \"text\": \"*Test Logs (click below to view more):*\n$truncated_logs... (logs truncated)\"
+                  \"text\": \"*Test Logs (Click below to expand):*\n$truncated_logs... (more logs)\"
                 }
               },
               {
-                \"type\": \"section\",
-                \"text\": {
-                  \"type\": \"mrkdwn\",
-                  \"text\": \"*Click below to view the full logs:* \n<$artifact_url|Full Logs here>\"
-                }
+                \"type\": \"actions\",
+                \"elements\": [
+                  {
+                    \"type\": \"button\",
+                    \"text\": {
+                      \"type\": \"plain_text\",
+                      \"text\": \"Expand Logs\"
+                    },
+                    \"action_id\": \"expand_logs_button\"
+                  }
+                ]
               }
             ]
           }" \
