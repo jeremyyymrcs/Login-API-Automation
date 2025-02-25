@@ -41,6 +41,7 @@ jobs:
           cd tests
           pytest test_login.py -s -q -x --dashboard --html=report.html --save-screenshot --maximize 2>&1 | tee result.log   
           
+
       - name: Send logs to Slack
         if: success() || failure()
         run: |
@@ -53,48 +54,26 @@ jobs:
           else
             result_summary="*Test Results Summary:* Passed ✅"
           fi
-          
-          # Get the link to download the GitHub artifacts
-          artifact_url="https://github.com/jeremyyymrcs/Login-API-Automation/actions/runs/${{ github.run_id }}"
       
-          # Limit the log display to a preview of the first 1000 characters
-          log_preview="${log_contents:0:1000}"
-      
-          # Build Slack message payload with a button for viewing full logs
-          slack_message="{
-            \"blocks\": [
-              {
-                \"type\": \"section\",
-                \"text\": {
-                  \"type\": \"mrkdwn\",
-                  \"text\": \"$result_summary\\n---\\n*Test Logs Preview:*\\n$log_preview\\n... (click below to view more)\\n---\\n*Test Run Completed* ✔️\\n‎\"
-                }
-              },
-              {
-                \"type\": \"section\",
-                \"block_id\": \"log_section\",
-                \"text\": {
-                  \"type\": \"mrkdwn\",
-                  \"text\": \"*Click the button below to view the full logs*\"
-                },
-                \"accessory\": {
-                  \"type\": \"button\",
-                  \"text\": {
-                    \"type\": \"plain_text\",
-                    \"text\": \"View Full Logs\"
-                  },
-                  \"action_id\": \"view_full_logs\",
-                  \"value\": \"$log_contents\"
-                }
-              }
-            ]
-          }"
-          
-          # Send the logs, result summary, and artifact link to Slack
+          # Send the logs, result summary, and formatted message to Slack with collapsible section
           curl -X POST -H 'Content-type: application/json' \
-          --data "$slack_message" \
+          --data "{\"blocks\":[
+            {
+              \"type\": \"section\",
+              \"text\": {
+                \"type\": \"mrkdwn\",
+                \"text\": \"$result_summary\"
+              }
+            },
+            {
+              \"type\": \"section\",
+              \"text\": {
+                \"type\": \"mrkdwn\",
+                \"text\": \"*Test Logs:*\\n<details><summary>Click to expand logs</summary>$log_contents</details>\"
+              }
+            }
+          ]}" \
           ${{ secrets.SLACK_CHANNEL_REPORT_HOOK }}
-
 
       - name: Test with API Automation
         run: |
