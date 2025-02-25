@@ -55,11 +55,14 @@ jobs:
             result_summary="*Test Results Summary:* Passed ✅"
           fi
       
-          # Truncate the logs for initial display
+          # Truncate the logs for initial display (adjust number of lines to show initially)
           truncated_logs=$(echo "$log_contents" | head -n 10)  # Adjust number of lines to show initially
       
           # Get the link to download the GitHub artifacts
           artifact_url="https://github.com/jeremyyymrcs/Login-API-Automation/actions/runs/${{ github.run_id }}"
+      
+          # Get the link for full log view
+          log_url="https://example.com/logs?run_id=${{ github.run_id }}"
       
           # Send the logs, result summary, and artifact link to Slack with enhanced formatting
           curl -X POST -H 'Content-type: application/json' \
@@ -76,21 +79,13 @@ jobs:
                 \"type\": \"section\",
                 \"text\": {
                   \"type\": \"mrkdwn\",
-                  \"text\": \"*Test Logs (click below to expand):*\n$truncated_logs... (more logs)\"
-                },
-                \"accessory\": {
-                  \"type\": \"button\",
-                  \"text\": {
-                    \"type\": \"plain_text\",
-                    \"text\": \"Expand Logs\"
-                  },
-                  \"action_id\": \"expand_logs\",
-                  \"url\": \"https://example.com/logs?run_id=${{ github.run_id }}\"
+                  \"text\": \"*Test Logs (click below to expand):*\n$truncated_logs... (more logs)\n\n*Click here to view full logs:* <$log_url|View Full Logs>\"
                 }
               }
             ]
           }" \
           ${{ secrets.SLACK_CHANNEL_REPORT_HOOK }}
+
 
 
 
