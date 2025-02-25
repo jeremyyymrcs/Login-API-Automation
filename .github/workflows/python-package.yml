@@ -56,15 +56,18 @@ jobs:
           
           # Get the link to download the GitHub artifacts
           artifact_url="https://github.com/jeremyyymrcs/Login-API-Automation/actions/runs/${{ github.run_id }}"
-          
-          # Build Slack message payload with a button for downloading logs
+      
+          # Limit the log display to a preview of the first 1000 characters
+          log_preview="${log_contents:0:1000}"
+      
+          # Build Slack message payload with a button for viewing full logs
           slack_message="{
             \"blocks\": [
               {
                 \"type\": \"section\",
                 \"text\": {
                   \"type\": \"mrkdwn\",
-                  \"text\": \"$result_summary\\n---\\n*Test Logs:* (see below)\\n---\\n*Test Run Completed* ✔️\\n‎\"
+                  \"text\": \"$result_summary\\n---\\n*Test Logs Preview:*\\n$log_preview\\n... (click below to view more)\\n---\\n*Test Run Completed* ✔️\\n‎\"
                 }
               },
               {
@@ -72,15 +75,16 @@ jobs:
                 \"block_id\": \"log_section\",
                 \"text\": {
                   \"type\": \"mrkdwn\",
-                  \"text\": \"*Click the button below to view detailed logs*\"
+                  \"text\": \"*Click the button below to view the full logs*\"
                 },
                 \"accessory\": {
                   \"type\": \"button\",
                   \"text\": {
                     \"type\": \"plain_text\",
-                    \"text\": \"View Logs\"
+                    \"text\": \"View Full Logs\"
                   },
-                  \"url\": \"$artifact_url\"
+                  \"action_id\": \"view_full_logs\",
+                  \"value\": \"$log_contents\"
                 }
               }
             ]
@@ -90,6 +94,7 @@ jobs:
           curl -X POST -H 'Content-type: application/json' \
           --data "$slack_message" \
           ${{ secrets.SLACK_CHANNEL_REPORT_HOOK }}
+
 
       - name: Test with API Automation
         run: |
