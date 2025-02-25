@@ -55,9 +55,8 @@ jobs:
             result_summary="*Test Results Summary:* Passed ✅"
           fi
       
-          # Truncate logs to only show a snippet in the message
-          truncated_logs=$(echo "$log_contents" | head -n 10) # Show only first 10 lines
-          full_logs_url="https://example.com/logs?run_id=${{ github.run_id }}"  # This will link to full logs
+          # Truncate the logs for initial display
+          truncated_logs=$(echo "$log_contents" | head -n 10)  # Adjust number of lines to show initially
       
           # Get the link to download the GitHub artifacts
           artifact_url="https://github.com/jeremyyymrcs/Login-API-Automation/actions/runs/${{ github.run_id }}"
@@ -77,7 +76,7 @@ jobs:
                 \"type\": \"section\",
                 \"text\": {
                   \"type\": \"mrkdwn\",
-                  \"text\": \"*Test Logs (click below to expand):*\n$truncated_logs... (click to expand)\"
+                  \"text\": \"*Test Logs (click below to expand):*\n$truncated_logs... (more logs)\"
                 },
                 \"accessory\": {
                   \"type\": \"button\",
@@ -86,12 +85,13 @@ jobs:
                     \"text\": \"Expand Logs\"
                   },
                   \"action_id\": \"expand_logs\",
-                  \"url\": \"$full_logs_url\"
+                  \"url\": \"https://example.com/logs?run_id=${{ github.run_id }}\"
                 }
               }
             ]
           }" \
           ${{ secrets.SLACK_CHANNEL_REPORT_HOOK }}
+
 
 
 
