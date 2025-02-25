@@ -40,7 +40,7 @@ jobs:
         run: |
           cd tests
           pytest test_login.py -s -q -x --dashboard --html=report.html --save-screenshot --maximize 2>&1 | tee result.log   
-          
+
       - name: Send logs to Slack
         if: success() || failure()
         run: |
@@ -78,7 +78,7 @@ jobs:
                   },
                   {
                     "type": "mrkdwn",
-                    "text": "*First few lines of logs:*\n$(echo $log_contents | cut -c 1-500)..."  # First 500 chars of logs
+                    "text": "*First few lines of logs:*\n$(echo "$log_contents" | head -n 10)"
                   }
                 ]
               },
@@ -109,7 +109,7 @@ jobs:
           }
           EOF
           )
-
+          
           # Send the logs, result summary, and artifact link to Slack with enhanced formatting
           curl -X POST -H 'Content-type: application/json' \
           --data "$payload" \
