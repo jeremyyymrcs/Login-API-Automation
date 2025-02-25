@@ -46,7 +46,7 @@ jobs:
         if: success() || failure()
         run: |
           # Get the logs and properly escape special characters
-          log_contents="`$(cat tests/result.log | sed 's/"/\\"/g' | sed ':a;N;$!ba;s/\n/\\n/g')`"
+          log_contents="```$(cat tests/result.log | sed 's/"/\\"/g' | sed ':a;N;$!ba;s/\n/\\n/g')```"
           
           
           # Check if "failed" or "error" keywords are present in the logs to determine test result
