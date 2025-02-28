@@ -42,11 +42,15 @@ jobs:
           pytest test_login.py -s -q -x --dashboard --html=report.html --save-screenshot --maximize 2>&1 | tee result.log   
           
 
-      - name: Send logs to Slack
+- name: Send logs to Slack
         if: success() || failure()
         run: |
           # Get the logs and properly escape special characters
           log_contents=$(cat tests/result.log | sed 's/"/\\"/g' | sed ':a;N;$!ba;s/\n/\\n/g')
+          
+          # Get the commit ID and commit message
+          commit_id=$(git log -1 --format='%H')
+          commit_message=$(git log -1 --format='%s')
           
           # Check if "failed" or "error" keywords are present in the logs to determine test result
           if [[ "$log_contents" == *"ERROR"* ]]; then
@@ -57,10 +61,10 @@ jobs:
           
           # Get the link to download the GitHub artifacts
           artifact_url="https://github.com/jeremyyymrcs/Login-API-Automation/actions/runs/${{ github.run_id }}"
-          
-          # Send the logs, result summary, and artifact link to Slack with enhanced formatting
+
+          # Send the logs, result summary, commit details, and artifact link to Slack with enhanced formatting
           curl -X POST -H 'Content-type: application/json' \
-          --data "{\"text\":\"*Test Logs:*\\n$log_contents\\n---\\n\\n$result_summary\\n---\\n*To download the detailed report, visit*: <$artifact_url|GitHub Artifacts>\\n\\n---\\n*Test Run Completed* ✔️\\n‎ \"}" \
+          --data "{\"text\":\"*Test Logs:*\\n$log_contents\\n---\\n\\n$result_summary\\n---\\n*Commit ID:* $commit_id\\n*Commit Message:* $commit_message\\n---\\n*To download the detailed report, visit*: <$artifact_url|GitHub Artifacts>\\n\\n---\\n*Test Run Completed* ✔️\\n‎ \"}" \
           ${{ secrets.SLACK_CHANNEL_REPORT_HOOK }}
 
       - name: Test with API Automation
@@ -87,12 +91,6 @@ jobs:
       - name: Create ZIP of report and assets
         run: |
           zip -r test-results.zip tests/report.html tests/assets/
-
-
-
-
-
-
 
 #      - name: Send results to Slack with the zip file
 #        if: success() || failure()  # Send notification regardless of success/failure
