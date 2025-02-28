@@ -41,22 +41,6 @@ jobs:
           cd tests
           pytest test_login.py -s -q -x --dashboard --html=report.html --save-screenshot --maximize 2>&1 | tee result.log   
 
-#      - name: Get Commit Info from Repo B
-#        run: |
-#          # Check if the workflow was triggered by repository-dispatch
-#          if [ "${{ github.event_name }}" == "repository_dispatch" ]; then
-#            # Use commit info from the payload for repository-dispatch
-#            commit_id="${{ github.event.client_payload.commit_id }}"
-#            commit_message="${{ github.event.client_payload.commit_message }}"
-#          else
-#            # Use commit info from the current repo (git log)
-#            commit_id=$(git log -1 --format='%H')
-#            commit_message=$(git log -1 --format='%s')
-#          fi
-#
-#          echo "Commit ID: $commit_id"
-#          echo "Commit Message: $commit_message"
-
       - name: Send logs to Slack
         if: success() || failure()
         run: |
