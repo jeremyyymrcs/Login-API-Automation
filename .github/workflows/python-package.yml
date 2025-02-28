@@ -42,7 +42,7 @@ jobs:
           pytest test_login.py -s -q -x --dashboard --html=report.html --save-screenshot --maximize 2>&1 | tee result.log   
           
 
-- name: Send logs to Slack
+      - name: Send logs to Slack
         if: success() || failure()
         run: |
           # Get the logs and properly escape special characters
