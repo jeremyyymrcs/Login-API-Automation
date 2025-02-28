@@ -53,7 +53,7 @@ jobs:
             commit_id=$(git log -1 --format='%H')
             commit_message=$(git log -1 --format='%s')
           fi
-
+      
           echo "Commit ID: $commit_id"
           echo "Commit Message: $commit_message"
 
@@ -62,6 +62,10 @@ jobs:
         run: |
           # Get the logs and properly escape special characters
           log_contents=$(cat tests/result.log | sed 's/"/\\"/g' | sed ':a;N;$!ba;s/\n/\\n/g')
+          
+          # Debugging: Print commit details to ensure they are being captured correctly
+          echo "DEBUG: Commit ID: $commit_id"
+          echo "DEBUG: Commit Message: $commit_message"
           
           # Check if "failed" or "error" keywords are present in the logs to determine test result
           if [[ "$log_contents" == *"ERROR"* ]]; then
@@ -72,7 +76,7 @@ jobs:
           
           # Get the link to download the GitHub artifacts
           artifact_url="https://github.com/jeremyyymrcs/Login-API-Automation/actions/runs/${{ github.run_id }}"
-
+      
           # Send the logs, result summary, commit details, and artifact link to Slack with enhanced formatting
           curl -X POST -H 'Content-type: application/json' \
           --data "{\"text\":\"*Test Logs:*\\n$log_contents\\n---\\n\\n$result_summary\\n---\\n*Commit ID:* $commit_id\\n*Commit Message:* $commit_message\\n---\\n*To download the detailed report, visit*: <$artifact_url|GitHub Artifacts>\\n\\n---\\n*Test Run Completed* ✔️\\n‎ \"}" \
