@@ -9,5 +9,10 @@ class HomePage(BaseCase):
     welcome_label = "//h1[contains(text(),'Welcome!')]"
 
     def verify_home_page(self):
-        self.sleep(2)
-        self.assert_element(self.welcome_label)
+        try:
+            self.sleep(2)
+            self.assert_element(self.welcome_label)
+        except Exception as e:
+
+            logger.error(f"An error occurred during verifying home page: {e}")
+            raise

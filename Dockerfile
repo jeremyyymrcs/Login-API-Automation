@@ -135,7 +135,7 @@ ENV DISPLAY=:99
 RUN Xvfb :99 -screen 0 1280x1024x24 &
 
 
-CMD cd tests && pytest test_login.py -s -q -x --dashboard --html=report.html --save-screenshot --maximizecls
+CMD cd tests && pytest test_login.py -s -q -x --dashboard --html=report.html --save-screenshot --maximize
 
 
 
