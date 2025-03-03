@@ -9,7 +9,7 @@ logger = get_custom_logger(__name__)
 
 class SignUpPage(BasePage):
     toptp_code = "//*[(contains(@id, 'totp'))]"
-    sign_up_redirection = "12//a[contains(.,'seleniumbase.io/realworld/signup')]"
+    sign_up_redirection = "//a[contains(.,'seleniumbase.io/realworld/signup')]"
 
     def get_secret_key(self):
         self.click(self.sign_up_redirection)
