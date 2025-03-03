@@ -9,16 +9,16 @@ logger = get_custom_logger(__name__)
 
 class SignUpPage(BasePage):
     toptp_code = "//*[(contains(@id, 'totp'))]"
-    sign_up_redirection = "//a[contains(.,'seleniumbase.io/realworld/signup')]"
+    sign_up_redirection = "###//a[contains(.,'seleniumbase.io/realworld/signup')]"
 
     def get_secret_key(self):
-        self.click(self.sign_up_redirection)
-        self.switch_to_window(1)
-        logger.info("Redirected to the sign up page.")
-
-        logger.info("Attempting to retrieve the secret key from the page.")
-
         try:
+            self.click(self.sign_up_redirection)
+            self.switch_to_window(1)
+            logger.info("Redirected to the sign up page.")
+
+            logger.info("Attempting to retrieve the secret key from the page.")
+
             # Get the secret key from the page
             generated_totp_code = self.get_text_content(self.toptp_code, timeout=10)
             logger.info(f"Secret key retrieved successfully: {generated_totp_code}")

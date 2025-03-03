@@ -67,7 +67,7 @@ jobs:
           echo "DEBUG: Commit Message: $commit_message"
           
           # Check if "failed" or "error" keywords are present in the logs to determine test result
-          if [[ "$log_contents" == *"ERROR"* || "$log_contents" == *"stopping"* || "$log_contents" == *"failed"* ]]; then
+          if [[ "$log_contents" == *"- ERROR -"* ]]; then
             result_summary="⚠️ *Test Results Summary:* Failed"
           else
             result_summary="🎉 *Test Results Summary:* Passed"
