@@ -76,12 +76,10 @@ jobs:
           # Get the link to download the GitHub artifacts
           artifact_url="https://github.com/jeremyyymrcs/Login-API-Automation/actions/runs/${{ github.run_id }}"
           
-           # Create a big text art for "Automation Reports"
-          header="=====================\n  AUTOMATION REPORTS  \n====================="
-      
-          # Send the logs, result summary, commit details, and artifact link to Slack with enhanced formatting
+           execution_datetime=$(date +"%Y-%m-%d %H:%M:%S")
+          
           curl -X POST -H 'Content-type: application/json' \
-          --data "{\"text\":\"📝 *Test Logs:* \\n$log_contents\\n\\n\\n\\n$result_summary\\n\\n*━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━*\\n\\n🔑 *Commit ID:*  $commit_id\\n\\n💬 *Commit Message:* $commit_message\\n\\n*━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━*\\n\\n*📥 To download the detailed report, visit*: <$artifact_url|GitHub Artifacts>\\n\\n*✔️ Test Run Completed* \\n*━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━*‎\"}" \
+          --data "{\"text\":\"📝 *Test Logs:* \\n$log_contents\\n\\n\\n\\n$result_summary\\n\\n*━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━*\\n\\n🔑 *Commit ID:*  $commit_id\\n\\n💬 *Commit Message:* $commit_message\\n\\n📅 *Execution Date & Time:* $execution_datetime\\n\\n*━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━*\\n\\n*📥 To download the detailed report, visit*: <$artifact_url|GitHub Artifacts>\\n\\n*✔️ Test Run Completed* \\n*━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━*‎\"}" \
           ${{ secrets.SLACK_CHANNEL_REPORT_HOOK }}
 
       - name: Test with API Automation
