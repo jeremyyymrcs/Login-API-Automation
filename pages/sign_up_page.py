@@ -1,5 +1,3 @@
-from seleniumbase import BaseCase
-
 from pages.base_page import BasePage
 from utilities.custom_logging import get_custom_logger
 
@@ -30,3 +28,4 @@ class SignUpPage(BasePage):
 
         except Exception as e:
             logger.error(f"Failed to retrieve or save the secret key: {e}")
+            raise
