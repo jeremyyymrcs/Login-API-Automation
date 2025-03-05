@@ -28,4 +28,4 @@ class SignUpPage(BasePage):
 
         except Exception as e:
             logger.error(f"Failed to retrieve or save the secret key: {e}")
-        raise
+            raise
