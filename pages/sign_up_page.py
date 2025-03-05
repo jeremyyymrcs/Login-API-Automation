@@ -1,5 +1,3 @@
-from seleniumbase import BaseCase
-
 from pages.base_page import BasePage
 from utilities.custom_logging import get_custom_logger
 
@@ -9,7 +7,7 @@ logger = get_custom_logger(__name__)
 
 class SignUpPage(BasePage):
     toptp_code = "//*[(contains(@id, 'totp'))]"
-    sign_up_redirection = "//a[contains(.,'seleniumbase.io/realworld/signup')]"
+    sign_up_redirection = "//a[contains(.,'seleniumbase.io/realworld/signup2')]"
 
     def get_secret_key(self):
         try:
@@ -30,3 +28,4 @@ class SignUpPage(BasePage):
 
         except Exception as e:
             logger.error(f"Failed to retrieve or save the secret key: {e}")
+        raise
