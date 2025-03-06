@@ -1,5 +1,6 @@
 from pages.base_page import BasePage
 from utilities.custom_logging import get_custom_logger
+from utilities.file_operations import FileOperations
 from locators.locators import SignUpPageLocators
 
 # Set up logger
@@ -21,9 +22,7 @@ class SignUpPage(BasePage):
             logger.info(f"Secret key retrieved successfully: {generated_totp_code}")
 
             # Save the secret key to a file
-            with open("..//data//saved_totp_code.txt", "w") as file:
-                file.write(generated_totp_code)
-            logger.info("TOTP code saved to 'saved_totp_code.txt'.")
+            FileOperations.save_totp_code(generated_totp_code)
 
         except Exception as e:
             logger.error(f"Failed to retrieve or save the secret key: {e}")
