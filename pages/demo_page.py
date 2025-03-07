@@ -15,3 +15,5 @@ class DemoPage(BaseCase):
 
             logger.error(f"An error occurred during demo page: {e}")
             raise
+
+        # THIS IS THE CONTINUATION OF DEMO PAGE
