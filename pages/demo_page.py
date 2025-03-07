@@ -13,5 +13,5 @@ class DemoPage(BaseCase):
             self.assert_element(DemoPageLocators.DEMO_PAGE_TAB)
         except Exception as e:
 
-            logger.error(f"An error occurred during verifying home page: {e}")
+            logger.error(f"An error occurred during demo page: {e}")
             raise
