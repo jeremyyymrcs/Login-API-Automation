@@ -17,7 +17,6 @@ class FileOperations:
             logger.error(f"Failed to save TOTP code to file at {file_path}: {e}")
             raise
 
-
     @staticmethod
     def read_totp_code():
         """Reads the generated TOTP code from a file."""
@@ -28,5 +27,3 @@ class FileOperations:
         except Exception as e:
             logger.error(f"Failed to read TOTP code from file at {file_path}: {e}")
             raise
-
-

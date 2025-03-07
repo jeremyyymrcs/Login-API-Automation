@@ -1,11 +1,32 @@
 import logging
 import colorlog
+import os
+
 
 def clear_custom_log_file():
-    with open('my_custom.log', 'w'):
-        pass  # This will clear the file by opening it in write mode and immediately closing it
+    # Dynamically determine the log directory relative to the current working directory
+    log_dir = os.path.join(os.getcwd(), 'reports')
+    log_file = 'my_custom.log'
+
+    # Ensure that the directory exists
+    os.makedirs(log_dir, exist_ok=True)
+
+    # Construct the full file path
+    log_file_path = os.path.join(log_dir, log_file)
+
+    # Clear the log file by opening it in write mode and immediately closing it
+    with open(log_file_path, 'w'):
+        pass
+
 
 def get_custom_logger(name, log_level=logging.INFO):
+    # Dynamically determine the log directory relative to the current working directory
+    log_dir = os.path.join(os.getcwd(), 'reports')
+    log_file = 'my_custom.log'
+
+    # Construct the full file path
+    log_file_path = os.path.join(log_dir, log_file)
+
     # Clear the log file before configuring the logger
     clear_custom_log_file()
 
@@ -26,8 +47,8 @@ def get_custom_logger(name, log_level=logging.INFO):
         }
     )
 
-    # Create a file handler
-    file_handler = logging.FileHandler('my_custom.log')
+    # Create a file handler and use the dynamically constructed log file path
+    file_handler = logging.FileHandler(log_file_path)
     file_handler.setFormatter(formatter)
     logger.addHandler(file_handler)
 
