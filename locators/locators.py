@@ -15,3 +15,7 @@ class SignUpPageLocators:
     TOTP_CODE = "//*[(contains(@id, 'totp'))]"
     SIGN_UP_REDIRECTION = "//a[contains(.,'seleniumbase.io/realworld/signup')]"
     PASSWORD_INPUT = "//input[@id='password']"
+
+class DemoPageLocators:
+    DEMO_PAGE_TAB = "//a[contains(.,'Demo Page')]"
+    DEMO_PAGE_LABEL = "//h1[contains(text(),'Demo Page')]"
