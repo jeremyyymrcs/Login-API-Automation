@@ -39,7 +39,7 @@ jobs:
       - name: Test with Login Feature
         run: |
           cd tests
-          pytest test_login.py -s -q -x --dashboard --html=report.html --save-screenshot --maximize 2>&1 | tee result.log   
+          pytest test_login.py 2>&1 | tee result.log
 
       - name: Send logs to Slack
         if: success() || failure()
@@ -54,7 +54,7 @@ jobs:
             commit_id=$(git log -1 --format='%H')
             commit_message=$(git log -1 --format='%s')
           fi
-      
+          
           echo "Commit ID: $commit_id"
           echo "Commit Message: $commit_message"
           

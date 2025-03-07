@@ -7,7 +7,7 @@ logger = get_custom_logger(__name__)
 
 class BasePage(BaseCase):
 
-    def setUp(self):
+    def setUp(self, **kwargs):
         """This is automatically run by SeleniumBase before each test"""
         print("\n\n=== Starting New Test Case ===")
         logger.info(f"Setting up the browser and opening the website.")
