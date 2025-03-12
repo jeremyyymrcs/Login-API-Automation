@@ -108,58 +108,8 @@ jobs:
         run: |
           zip -r test-results.zip tests/report.html tests/assets/
 
-#      - name: Send results to Slack with the zip file
-#        if: success() || failure()  # Send notification regardless of success/failure
-#        run: |
-#          curl -X POST -H 'Content-type: application/json' \
-#            --data '{
-#              "text": "Test results are available! :tada:\n\nHere is the [test report](https://github.com/jeremyyymrcs/Login-API-Automation/actions/runs/${{ github.run_id }}/artifacts/${{ github.artifacts_id }})\n\nThe tests have completed. Check the results and logs.\n\nAlso, the zip file containing the results is attached below."
-#            }' \
-#            ${{ secrets.SLACK_CHANNEL_REPORT_HOOK }}
 
-
-#      - name: Upload ZIP file to Slack
-#        if: success() || failure()  # Send notification regardless of success/failure
-#        run: |
-#          # Upload the zip file to Slack channel using the new recommended method
-#          curl -X POST https://slack.com/api/files.getUploadURLExternal \
-#            -H 'Authorization: Bearer ${{ secrets.SLACK_BOT_TOKEN }}' \
-#            -F file=@test-results.zip \
-#            -F "initial_comment=Test results are available! :tada:\n\nHere is the [test report](https://github.com/jeremyyymrcs/Login-API-Automation/actions/runs/${{ github.run_id }})\n\nThe tests have completed. Check the results and logs.\n\nAlso, the zip file containing the results is attached below." \
-#            -F channels=${{ secrets.SLACK_TEST_REGRESSIONAL_CHANNEL_ID }} \
-#            -F "filename=test-results.zip" \
-#            -F "filetype=zip"
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#      - name: Send results to Slack
-#        if: success() || failure()  # Send notification regardless of success/failure
-#        run: |
-#          curl -X POST -H 'Content-type: application/json' \
-#            --data '{
-#              "text": "Test results are available! :tada:\n\nHere is the [test report](https://github.com/jeremyyymrcs/Login-API-Automation/actions/runs/${{ github.run_id }})\n\nThe tests have completed. Check the results and logs."
-#            }' \
-#            ${{ secrets.SLACK_CHANNEL_REPORT_HOOK }}
-
-
+###
 #name: Trigger Repo A Workflow
 #
 #on:
@@ -175,10 +125,18 @@ jobs:
 #      - name: Checkout Repo B
 #        uses: actions/checkout@v4
 #
+#      - name: Get Commit Info in Repo B
+#        id: commit_info
+#        run: |
+#          commit_id=$(git log -1 --format='%H')
+#          commit_message=$(git log -1 --format='%s')
+#          echo "commit_id=$commit_id" >> $GITHUB_ENV
+#          echo "commit_message=$commit_message" >> $GITHUB_ENV
+#
 #      - name: Trigger workflow in Repo A
 #        uses: peter-evans/repository-dispatch@v1
 #        with:
-#          repository: jeremyyymrcs/Login-API-Automation  # Name of Repo A (replace if different)
+#          repository: jeremyyymrcs/Login-API-Automation  # Repo A's name
 #          token: ${{ secrets.WORKFLOW_REPO_JEREMY_QA }}  # Repo B secret tokens
-#          event-type: trigger-workflow  # Custom event type for Repo A to listen to
-#          client-payload: '{"ref": "refs/heads/main"}'  # Specify the branch you want to trigger the workflow for
+#          event-type: trigger-workflow  # Event type to trigger the workflow in Repo A
+#          client-payload: '{"ref": "refs/heads/main", "commit_id": "${{ env.commit_id }}", "commit_message": "${{ env.commit_message }}"}'  # Passing commit details
